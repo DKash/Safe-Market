@@ -87,4 +87,25 @@ public class RNPerfil
 		}
 		return true;
 	}
+	
+	public Perfil verificarPerfilExistentePorId(int codigo)
+	{
+		perfilDAO = DAOFactory.getPerfilDAO();
+		Perfil p = null;
+		try
+		{
+			p = perfilDAO.consultarPorId(codigo);
+		}
+		catch (ClienteInexistenteException | ProdutoInexistenteException | SupermercadoInexistenteException
+				| UsuarioInexistenteException | CategoriaInexistenteException | MarcaInexistenteException
+				| UnidadeMedidaInexistenteException | PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		if (p == null)
+		{
+			return null;
+		}
+		return p;
+	}
 }

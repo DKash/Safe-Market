@@ -28,7 +28,7 @@ public class Usuario
 {
 	// Atributos
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(length = 5)
 	private Integer codigo;
 

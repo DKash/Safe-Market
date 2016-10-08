@@ -25,7 +25,7 @@ public class Marca
 {
 	// Atributos
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer codigo;
 
 	@Column(length = 20, nullable = false)

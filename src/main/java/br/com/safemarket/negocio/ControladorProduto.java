@@ -87,7 +87,7 @@ public class ControladorProduto implements IControladorProduto
 			{
 				produtoDAO = DAOFactory.getProdutoDAO();
 				Categoria categoria = rnCategoria.verificarCategoriaExistente(produto.getCategoria().getCodigo());
-				Marca marca = rnMarca.verificarMarcaExistente(produto.getMarca().getCodigo());
+				Marca marca = rnMarca.verificarMarcaExistentePorId(produto.getMarca().getCodigo());
 				UnidadeMedida um = rnUnidadeMedida
 						.verificarUnidadeMedidaExistente(produto.getUnidadeMedida().getCodigo());
 				Supermercado supermercado = rnSupermercado

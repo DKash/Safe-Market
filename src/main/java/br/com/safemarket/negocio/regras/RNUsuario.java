@@ -29,22 +29,30 @@ public class RNUsuario
 		List<String> campos = new ArrayList<>();
 		if (usuario.getEmail() == null || (usuario.getEmail().equals(""))) campos.add(usuario.getEmail());
 		if (usuario.getSenha() == null || (usuario.getSenha().equals(""))) campos.add(usuario.getSenha());
+		if ((usuario.getPerfil().getCodigo() == 0)) campos.add(usuario.getPerfil().getCodigo().toString());
 		int tam = campos.size();
 		String resultado = "";
-		do
+		while (tam > 0)
 		{
 			resultado += " " + msg.getMsg_campo_invalido() + campos.get(tam);
 			tam--;
 		}
-		while (tam >= 0);
 		return resultado;
 	}
 
 	// Métodos
-	public boolean verificarUsuarioExistente(Usuario usuario) throws UsuarioInexistenteException
+	public boolean verificarUsuarioExistente(Usuario usuario)
 	{
 		usuarioDAO = DAOFactory.getUsuarioDAO();
-		Usuario u = usuarioDAO.pesquisarUsuarioPorEmail(usuario.getEmail());
+		Usuario u = null;
+		try
+		{
+			u = usuarioDAO.pesquisarUsuarioPorEmail(usuario.getEmail());
+		}
+		catch (UsuarioInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
 		if (u == null)
 		{
 			return false;

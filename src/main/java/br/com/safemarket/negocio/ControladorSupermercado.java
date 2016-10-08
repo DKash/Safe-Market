@@ -18,15 +18,20 @@ import javax.ws.rs.Produces;
 
 import br.com.safemarket.classesBasicas.Status;
 import br.com.safemarket.classesBasicas.Supermercado;
-import br.com.safemarket.dados.DAOFactory;
+import br.com.safemarket.dados.gererics.DAOFactory;
+import br.com.safemarket.exceptions.CategoriaExistenteException;
 import br.com.safemarket.exceptions.CategoriaInexistenteException;
 import br.com.safemarket.exceptions.ClienteExistenteException;
 import br.com.safemarket.exceptions.ClienteInexistenteException;
+import br.com.safemarket.exceptions.MarcaExistenteException;
 import br.com.safemarket.exceptions.MarcaInexistenteException;
+import br.com.safemarket.exceptions.PerfilExistenteException;
+import br.com.safemarket.exceptions.PerfilInexistenteException;
 import br.com.safemarket.exceptions.ProdutoExistenteException;
 import br.com.safemarket.exceptions.ProdutoInexistenteException;
 import br.com.safemarket.exceptions.SupermercadoExistenteException;
 import br.com.safemarket.exceptions.SupermercadoInexistenteException;
+import br.com.safemarket.exceptions.UnidadeMedidaExistenteException;
 import br.com.safemarket.exceptions.UnidadeMedidaInexistenteException;
 import br.com.safemarket.exceptions.UsuarioExistenteException;
 import br.com.safemarket.exceptions.UsuarioInexistenteException;
@@ -91,6 +96,22 @@ public class ControladorSupermercado implements IControladorSupermercado
 				{
 					// e.printStackTrace();
 				}
+				catch (CategoriaExistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (MarcaExistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (UnidadeMedidaExistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (PerfilExistenteException e)
+				{
+					// e.printStackTrace();
+				}
 			}
 		}
 		DAOFactory.close();
@@ -135,6 +156,22 @@ public class ControladorSupermercado implements IControladorSupermercado
 					return e.getMessage();
 				}
 				catch (UsuarioInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (CategoriaInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (MarcaInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (UnidadeMedidaInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (PerfilInexistenteException e)
 				{
 					// e.printStackTrace();
 				}
@@ -191,6 +228,10 @@ public class ControladorSupermercado implements IControladorSupermercado
 			// e.printStackTrace();
 		}
 		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
 		{
 			// e.printStackTrace();
 		}
@@ -274,6 +315,10 @@ public class ControladorSupermercado implements IControladorSupermercado
 		{
 			// e.printStackTrace();
 		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
 		DAOFactory.close();
 		return null;
 	}
@@ -310,6 +355,22 @@ public class ControladorSupermercado implements IControladorSupermercado
 			e.getMessage();
 		}
 		catch (UsuarioInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (CategoriaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (MarcaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
 		{
 			// e.printStackTrace();
 		}

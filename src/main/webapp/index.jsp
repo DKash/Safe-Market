@@ -1,9 +1,6 @@
 <html>
 <body>
-	<h2>Hello World!</h2>
-	<!-- <img alt="home" src="https://www.dropbox.com/s/8925pjxsqvz2hgv/feijao-carioca%20kikaldo.jpg?dl=0"> -->
-	<img alt="" height="1000px" width="1000px" src="https://www.dropbox.com/s/wsp382x4g95vwzr/feijao-carioca%20kikaldoPNG.png?dl=0">
-
+	<h2>Safe Market - Delivery Express</h2>
 	<div class="fb-like" data-share="true" data-width="450"
 		data-show-faces="true"></div>
 

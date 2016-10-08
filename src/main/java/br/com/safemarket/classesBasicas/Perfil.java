@@ -5,11 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 
 /**
  * @author Audry Martins
  *
  */
+@NamedQuery(name = "Perfil.findByName", query = "SELECT p FROM Perfil p WHERE p.nome LIKE :nome")
 @Entity
 public class Perfil
 {

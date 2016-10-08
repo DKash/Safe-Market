@@ -3,10 +3,14 @@
  */
 package br.com.safemarket.dados;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import br.com.safemarket.classesBasicas.Marca;
+import br.com.safemarket.classesBasicas.Status;
+import br.com.safemarket.dados.gererics.DAOGenerico;
 import br.com.safemarket.interfaces.dao.IMarcaDAO;
 
 /**
@@ -26,21 +30,34 @@ public class MarcaDAO extends DAOGenerico<Marca> implements IMarcaDAO
 	}
 
 	// Métodos
-	public Marca pesquisarMarcaPorNome(String nome)
+	public List<Marca> consultarTodosAtivos()
 	{
-		String consulta = "SELECT m FROM Marca m WHERE m.nome = :N";
-		TypedQuery<Marca> retorno = getEntityManager().createQuery(consulta, Marca.class);
-		retorno.setParameter("N", nome);
-		Marca resultado;
+		TypedQuery<Marca> query = this.entityManager.createNamedQuery("Marca.findAllActives", this.classePersistente);
+		query.setParameter("status", Status.ATIVO);
 		try
 		{
-			resultado = retorno.getSingleResult();
-			return resultado;
+			return query.getResultList();
 		}
 		catch (Exception e)
 		{
-			return null;
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public Marca pesquisarMarcaPorNome(String nome)
+	{
+		TypedQuery<Marca> query = this.entityManager.createNamedQuery("Marca.findByName", this.classePersistente);
+		query.setParameter("nome", nome);
+		try
+		{
+			return query.getSingleResult();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	// Gets e Sets

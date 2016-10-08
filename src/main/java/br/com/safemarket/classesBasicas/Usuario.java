@@ -8,6 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Fetch;
@@ -17,6 +19,10 @@ import org.hibernate.annotations.FetchMode;
  * @author Audry Martins
  *
  */
+@NamedQueries(
+{ @NamedQuery(name = "Usuario.findAllActives", query = "SELECT u FROM Usuario u WHERE u.status =:status"),
+		@NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE u.email =:email"),
+		@NamedQuery(name = "Usuario.signIn", query = "SELECT u FROM Usuario u WHERE u.email =:email AND u.senha = :senha") })
 @Entity
 public class Usuario
 {

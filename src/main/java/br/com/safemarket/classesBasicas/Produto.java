@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -19,6 +21,11 @@ import org.hibernate.annotations.FetchMode;
  * @author Audry Martins
  *
  */
+@NamedQueries(
+{ @NamedQuery(name = "Produto.findAllActives", query = "SELECT p FROM Produto p WHERE p.status =:status"),
+		@NamedQuery(name = "Produto.findByName", query = "SELECT p FROM Produto p WHERE p.nome LIKE :nome"),
+		@NamedQuery(name = "Produto.findByMark", query = "SELECT p FROM Produto p WHERE p.marca.nome LIKE :marca"),
+		@NamedQuery(name = "Produto.findByPrice", query = "SELECT p FROM Produto p WHERE p.preco =:preco")})
 @Entity
 public class Produto
 {

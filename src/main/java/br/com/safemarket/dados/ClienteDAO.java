@@ -1,9 +1,13 @@
 package br.com.safemarket.dados;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import br.com.safemarket.classesBasicas.Cliente;
+import br.com.safemarket.classesBasicas.Status;
+import br.com.safemarket.dados.gererics.DAOGenerico;
 import br.com.safemarket.interfaces.dao.IClienteDAO;
 
 /**
@@ -23,21 +27,50 @@ public class ClienteDAO extends DAOGenerico<Cliente> implements IClienteDAO
 	}
 
 	// Métodos
-	public Cliente pesquisarClientePorCPF(String cpf)
+	public Cliente pesquisarClientePorNome(String nome)
 	{
-		String consulta = "SELECT c FROM Cliente c WHERE c.cpf = :N";
-		TypedQuery<Cliente> retorno = getEntityManager().createQuery(consulta, Cliente.class);
-		retorno.setParameter("N", cpf);
-		Cliente resultado;
+		TypedQuery<Cliente> query = this.entityManager.createNamedQuery("Cliente.findByName", this.classePersistente);
+		query.setParameter("nome", nome);
 		try
 		{
-			resultado = retorno.getSingleResult();
-			return resultado;
+			return query.setMaxResults(1).getSingleResult();
 		}
 		catch (Exception e)
 		{
-			return null;
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public List<Cliente> consultarTodosAtivos()
+	{
+		TypedQuery<Cliente> query = this.entityManager.createNamedQuery("Cliente.findAllActives",
+				this.classePersistente);
+		query.setParameter("status", Status.ATIVO);
+		try
+		{
+			return query.getResultList();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Cliente pesquisarClientePorCPF(String cpf)
+	{
+		TypedQuery<Cliente> query = this.entityManager.createNamedQuery("Cliente.findByCPF", this.classePersistente);
+		query.setParameter("cpf", cpf);
+		try
+		{
+			return query.setMaxResults(1).getSingleResult();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	// Gets e Sets

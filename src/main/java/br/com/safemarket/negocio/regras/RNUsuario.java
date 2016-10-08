@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.safemarket.classesBasicas.Usuario;
-import br.com.safemarket.dados.DAOFactory;
+import br.com.safemarket.dados.gererics.DAOFactory;
 import br.com.safemarket.exceptions.UsuarioInexistenteException;
 import br.com.safemarket.interfaces.dao.IUsuarioDAO;
 import br.com.safemarket.util.Mensagens;

@@ -6,6 +6,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Cascade;
@@ -13,6 +15,14 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+/**
+ * @author Audry Martins
+ *
+ */
+@NamedQueries(
+{ @NamedQuery(name = "Supermercado.findAllActives", query = "SELECT s FROM Supermercado s WHERE s.usuario.status =:status"),
+		@NamedQuery(name = "Supermercado.findByName", query = "SELECT s FROM Supermercado s WHERE s.nome LIKE :nome"),
+		@NamedQuery(name = "Supermercado.findByCNPJ", query = "SELECT s FROM Supermercado s WHERE s.cnpj = :cnpj") })
 @Entity
 public class Supermercado
 {
@@ -38,9 +48,6 @@ public class Supermercado
 
 	@Column(length = 50, nullable = false)
 	private String email;
-
-	@Column(length = 5, nullable = true)
-	private int estoque;
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@Cascade(CascadeType.SAVE_UPDATE)
@@ -68,11 +75,10 @@ public class Supermercado
 	 * @param telefone
 	 * @param endereco
 	 * @param email
-	 * @param estoque
 	 * @param usuario
 	 */
 	public Supermercado(int codigo, String nome, String cnpj, String inscricaoEstatdual, String telefone,
-			Endereco endereco, String email, int estoque, Usuario usuario)
+			Endereco endereco, String email, Usuario usuario)
 	{
 		super();
 		this.codigo = codigo;
@@ -82,7 +88,6 @@ public class Supermercado
 		this.telefone = telefone;
 		this.endereco = endereco;
 		this.email = email;
-		this.estoque = estoque;
 		this.usuario = usuario;
 	}
 
@@ -204,23 +209,6 @@ public class Supermercado
 	public void setEmail(String email)
 	{
 		this.email = email;
-	}
-
-	/**
-	 * @return the estoque
-	 */
-	public int getEstoque()
-	{
-		return estoque;
-	}
-
-	/**
-	 * @param estoque
-	 *            the estoque to set
-	 */
-	public void setEstoque(int estoque)
-	{
-		this.estoque = estoque;
 	}
 
 	/**

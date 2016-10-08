@@ -14,15 +14,21 @@ import javax.ws.rs.Produces;
 
 import br.com.safemarket.classesBasicas.Status;
 import br.com.safemarket.classesBasicas.Usuario;
-import br.com.safemarket.dados.DAOFactory;
+import br.com.safemarket.dados.gererics.DAOFactory;
+import br.com.safemarket.exceptions.CategoriaExistenteException;
 import br.com.safemarket.exceptions.CategoriaInexistenteException;
 import br.com.safemarket.exceptions.ClienteExistenteException;
 import br.com.safemarket.exceptions.ClienteInexistenteException;
+import br.com.safemarket.exceptions.LoginInvalidoException;
+import br.com.safemarket.exceptions.MarcaExistenteException;
 import br.com.safemarket.exceptions.MarcaInexistenteException;
+import br.com.safemarket.exceptions.PerfilExistenteException;
+import br.com.safemarket.exceptions.PerfilInexistenteException;
 import br.com.safemarket.exceptions.ProdutoExistenteException;
 import br.com.safemarket.exceptions.ProdutoInexistenteException;
 import br.com.safemarket.exceptions.SupermercadoExistenteException;
 import br.com.safemarket.exceptions.SupermercadoInexistenteException;
+import br.com.safemarket.exceptions.UnidadeMedidaExistenteException;
 import br.com.safemarket.exceptions.UnidadeMedidaInexistenteException;
 import br.com.safemarket.exceptions.UsuarioExistenteException;
 import br.com.safemarket.exceptions.UsuarioInexistenteException;
@@ -97,6 +103,22 @@ public class ControladorUsuario implements IControladorUsuario
 			e.printStackTrace();
 			return e.getMessage();
 		}
+		catch (CategoriaExistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (MarcaExistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaExistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilExistenteException e)
+		{
+			// e.printStackTrace();
+		}
 		DAOFactory.close();
 		return mensagem;
 	}
@@ -147,6 +169,22 @@ public class ControladorUsuario implements IControladorUsuario
 			e.printStackTrace();
 			return e.getMessage();
 		}
+		catch (CategoriaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (MarcaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
 		DAOFactory.close();
 		return "";
 	}
@@ -185,6 +223,22 @@ public class ControladorUsuario implements IControladorUsuario
 			e.printStackTrace();
 			e.getMessage();
 		}
+		catch (CategoriaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (MarcaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
 		DAOFactory.close();
 		return null;
 	}
@@ -202,7 +256,16 @@ public class ControladorUsuario implements IControladorUsuario
 		usuarioDAO = DAOFactory.getUsuarioDAO();
 		try
 		{
-			Usuario user = usuarioDAO.consultarPorId(codigo);
+			Usuario user = new Usuario();
+			try
+			{
+				user = usuarioDAO.consultarPorId(codigo);
+			}
+			catch (PerfilInexistenteException e)
+			{
+				e.printStackTrace();
+				e.getMessage();
+			}
 			user.setStatus(Status.INATIVO);
 			usuarioDAO.alterar(user);
 			return msg.getMsg_usuario_excluido_com_sucesso();
@@ -236,6 +299,10 @@ public class ControladorUsuario implements IControladorUsuario
 		{
 			// e.printStackTrace();
 		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
 		DAOFactory.close();
 		return "";
 	}
@@ -252,18 +319,20 @@ public class ControladorUsuario implements IControladorUsuario
 	{
 		DAOFactory.abrir();
 		usuarioDAO = DAOFactory.getUsuarioDAO();
-		Usuario u;
+		Usuario u = null;
 		try
 		{
 			u = usuarioDAO.efetuarLogin(usuario);
-			return u;
 		}
-		catch (UsuarioInexistenteException e)
+		catch (LoginInvalidoException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
 		DAOFactory.close();
-		return null;
+		if (u == null)
+		{
+			return null;
+		}
+		return u;
 	}
 }

@@ -5,10 +5,14 @@
  */
 package br.com.safemarket.dados;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import br.com.safemarket.classesBasicas.Status;
 import br.com.safemarket.classesBasicas.Supermercado;
+import br.com.safemarket.dados.gererics.DAOGenerico;
 import br.com.safemarket.interfaces.dao.ISupermercadoDAO;
 
 /**
@@ -28,38 +32,52 @@ public class SupermercadoDAO extends DAOGenerico<Supermercado> implements ISuper
 	}
 
 	// Métodos
-	public Supermercado pesquisarSupermercadoPorCNPJ(String cnpj)
+	public List<Supermercado> consultarTodosAtivos()
 	{
-		String consulta = "SELECT c FROM Supermercado c WHERE c.cnpj = :N";
-		TypedQuery<Supermercado> retorno = getEntityManager().createQuery(consulta, Supermercado.class);
-		retorno.setParameter("N", cnpj);
-		Supermercado resultado;
+		TypedQuery<Supermercado> query = this.entityManager.createNamedQuery("Supermercado.findAllActives",
+				this.classePersistente);
+		query.setParameter("status", Status.ATIVO);
 		try
 		{
-			resultado = retorno.getSingleResult();
-			return resultado;
+			return query.getResultList();
 		}
 		catch (Exception e)
 		{
-			return null;
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public Supermercado pesquisarSupermercadoPorCNPJ(String cnpj)
+	{
+		TypedQuery<Supermercado> query = this.entityManager.createNamedQuery("Supermercado.findByCNPJ",
+				this.classePersistente);
+		query.setParameter("cnpj", cnpj);
+		try
+		{
+			return query.setMaxResults(1).getSingleResult();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public Supermercado pesquisarSupermercadoPorNome(String nome)
 	{
-		String comandoSelect = "SELECT s FROM Supermercado s WHERE s.nome = :N ";
-		TypedQuery<Supermercado> retorno = getEntityManager().createQuery(comandoSelect, Supermercado.class);
-		retorno.setParameter("N", "%" + nome + "%");
-		Supermercado resultado;
+		TypedQuery<Supermercado> query = this.entityManager.createNamedQuery("Supermercado.findByName",
+				this.classePersistente);
+		query.setParameter("nome", nome);
 		try
 		{
-			resultado = retorno.getSingleResult();
-			return resultado;
+			return query.setMaxResults(1).getSingleResult();
 		}
 		catch (Exception e)
 		{
-			return null;
+			e.printStackTrace();
 		}
+		return null;
 	}
 
 	// Gets e Sets

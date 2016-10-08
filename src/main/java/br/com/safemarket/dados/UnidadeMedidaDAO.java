@@ -3,10 +3,14 @@
  */
 package br.com.safemarket.dados;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import br.com.safemarket.classesBasicas.Status;
 import br.com.safemarket.classesBasicas.UnidadeMedida;
+import br.com.safemarket.dados.gererics.DAOGenerico;
 import br.com.safemarket.interfaces.dao.IUnidadeMedidaDAO;
 
 /**
@@ -26,21 +30,36 @@ public class UnidadeMedidaDAO extends DAOGenerico<UnidadeMedida> implements IUni
 	}
 
 	// Métodos
-	public UnidadeMedida pesquisarUnidadeMedidaPorNome(String nome)
+	public List<UnidadeMedida> consultarTodosAtivos()
 	{
-		String consulta = "SELECT um FROM UnidadeMedida um WHERE um.nome = :N";
-		TypedQuery<UnidadeMedida> retorno = getEntityManager().createQuery(consulta, UnidadeMedida.class);
-		retorno.setParameter("N", nome);
-		UnidadeMedida resultado;
+		TypedQuery<UnidadeMedida> query = this.entityManager.createNamedQuery("UnidadeMedida.findAllActives",
+				this.classePersistente);
+		query.setParameter("status", Status.ATIVO);
 		try
 		{
-			resultado = retorno.getSingleResult();
-			return resultado;
+			return query.getResultList();
 		}
 		catch (Exception e)
 		{
-			return null;
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public UnidadeMedida pesquisarUnidadeMedidaPorNome(String nome)
+	{
+		TypedQuery<UnidadeMedida> query = this.entityManager.createNamedQuery("UnidadeMedida.findByName",
+				this.classePersistente);
+		query.setParameter("nome", nome);
+		try
+		{
+			return query.setMaxResults(1).getSingleResult();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	// Gets e Sets

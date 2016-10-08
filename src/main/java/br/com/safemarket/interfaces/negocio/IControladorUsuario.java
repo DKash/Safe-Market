@@ -24,6 +24,6 @@ public interface IControladorUsuario
 	public String excluirUsuario(int codigo) throws UsuarioInexistenteException;
 
 	public List<Usuario> consultarTodosUsuarios() throws UsuarioInexistenteException;
-	
+
 	public Usuario efetuarLogin(Usuario usuario) throws UsuarioInexistenteException;
 }

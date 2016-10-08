@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.safemarket.classesBasicas.Supermercado;
-import br.com.safemarket.dados.DAOFactory;
+import br.com.safemarket.dados.gererics.DAOFactory;
 import br.com.safemarket.exceptions.CategoriaInexistenteException;
 import br.com.safemarket.exceptions.ClienteInexistenteException;
 import br.com.safemarket.exceptions.MarcaInexistenteException;
+import br.com.safemarket.exceptions.PerfilInexistenteException;
 import br.com.safemarket.exceptions.ProdutoInexistenteException;
 import br.com.safemarket.exceptions.SupermercadoInexistenteException;
 import br.com.safemarket.exceptions.UnidadeMedidaInexistenteException;
@@ -39,7 +40,6 @@ public class RNSupermercado
 		if (supermercado.getNome() == null || (supermercado.getNome().equals(""))) campos.add(supermercado.getNome());
 		if (supermercado.getInscricaoEstatdual() == null || (supermercado.getInscricaoEstatdual().equals("")))
 			campos.add(supermercado.getInscricaoEstatdual());
-		if (supermercado.getEstoque() == 0) campos.add(String.valueOf(supermercado.getEstoque()));
 		if (supermercado.getTelefone() == null || (supermercado.getTelefone().equals("")))
 			campos.add(supermercado.getTelefone());
 		int tam = campos.size();
@@ -111,6 +111,10 @@ public class RNSupermercado
 			// e.printStackTrace();
 		}
 		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
 		{
 			// e.printStackTrace();
 		}

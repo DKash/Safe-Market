@@ -3,11 +3,15 @@
  */
 package br.com.safemarket.negocio.regras;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.safemarket.classesBasicas.Categoria;
-import br.com.safemarket.dados.DAOFactory;
+import br.com.safemarket.dados.gererics.DAOFactory;
 import br.com.safemarket.exceptions.CategoriaInexistenteException;
 import br.com.safemarket.exceptions.ClienteInexistenteException;
 import br.com.safemarket.exceptions.MarcaInexistenteException;
+import br.com.safemarket.exceptions.PerfilInexistenteException;
 import br.com.safemarket.exceptions.ProdutoInexistenteException;
 import br.com.safemarket.exceptions.SupermercadoInexistenteException;
 import br.com.safemarket.exceptions.UnidadeMedidaInexistenteException;
@@ -26,7 +30,24 @@ public class RNCategoria
 
 	Mensagens msg = new Mensagens();
 
-	// Construtores
+	// Métodos
+	public String validarCampos(Categoria categoria)
+	{
+		List<String> campos = new ArrayList<>();
+		if (categoria.getNome() == null || (categoria.getNome().equals(""))) campos.add(categoria.getNome());
+		if (categoria.getSubcategoria() == null || (categoria.getSubcategoria().equals("")))
+			campos.add(categoria.getSubcategoria());
+		int tam = campos.size();
+		String resultado = "";
+		do
+		{
+			resultado += " " + msg.getMsg_campo_invalido() + campos.get(tam);
+			tam--;
+		}
+		while (tam >= 0);
+		return resultado;
+	}
+
 	public boolean verificarCategoriaExistente(Categoria categoria)
 	{
 		categoriaDAO = DAOFactory.getCategoriaDAO();
@@ -84,6 +105,10 @@ public class RNCategoria
 			// e.printStackTrace();
 		}
 		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
 		{
 			// e.printStackTrace();
 		}

@@ -7,7 +7,7 @@ package br.com.safemarket.exceptions;
  * @author Audry Martins
  *
  */
-public class CategoriaExistenteException extends Exception
+public class LoginInvalidoException extends Exception
 {
 	// Atributos
 	/**
@@ -15,7 +15,7 @@ public class CategoriaExistenteException extends Exception
 	 */
 	private static final long serialVersionUID = 1L;
 
-	// Métodos
+	// Construtores
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Throwable#getMessage()
@@ -23,6 +23,6 @@ public class CategoriaExistenteException extends Exception
 	@Override
 	public String getMessage()
 	{
-		return "A Categoria já existe";
+		return "Login inválido";
 	}
 }

@@ -1,10 +1,12 @@
+/**
+ * 
+ */
 package br.com.safemarket.negocio;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -12,8 +14,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import br.com.safemarket.classesBasicas.Cliente;
-import br.com.safemarket.classesBasicas.Status;
+import br.com.safemarket.classesBasicas.Perfil;
 import br.com.safemarket.dados.gererics.DAOFactory;
 import br.com.safemarket.exceptions.CategoriaExistenteException;
 import br.com.safemarket.exceptions.CategoriaInexistenteException;
@@ -31,52 +32,51 @@ import br.com.safemarket.exceptions.UnidadeMedidaExistenteException;
 import br.com.safemarket.exceptions.UnidadeMedidaInexistenteException;
 import br.com.safemarket.exceptions.UsuarioExistenteException;
 import br.com.safemarket.exceptions.UsuarioInexistenteException;
-import br.com.safemarket.interfaces.dao.IClienteDAO;
-import br.com.safemarket.interfaces.negocio.IControladorCliente;
-import br.com.safemarket.negocio.regras.RNCliente;
+import br.com.safemarket.interfaces.dao.IPerfilDAO;
+import br.com.safemarket.interfaces.negocio.IControladorPerfil;
+import br.com.safemarket.negocio.regras.RNPerfil;
 import br.com.safemarket.util.Mensagens;
 
+/**
+ * @author Audry Martins
+ *
+ */
 @Path("/service")
-public class ControladorCliente implements IControladorCliente
+public class ControladorPerfil implements IControladorPerfil
 {
-	private IClienteDAO clienteDAO;
+	// Atributos
+	private IPerfilDAO perfilDAO;
 
-	private RNCliente rnCliente = new RNCliente();
+	private RNPerfil rnPerfil = new RNPerfil();
 
-	Mensagens msg = new Mensagens();
+	private Mensagens msg = new Mensagens();
 
-	/**
-	 * @throws ClienteInexistenteException
-	 * @Consumes - determina o formato dos dados que vamos postar
-	 * @Produces - determina o formato dos dados que vamos retornar
-	 * 
-	 *           Esse método cadastra um novo cliente
-	 */
+	// Métodods
 	@POST
 	@Consumes("application/json; charset=UTF-8")
 	@Produces("application/json; charset=UTF-8")
-	@Path("/cadastrarCliente")
-	public String cadastrarCliente(Cliente cliente)
+	@Path("/cadastrarPerfil")
+	@Override
+	public String cadastrarPerfil(Perfil perfil)
 	{
 		DAOFactory.abrir();
 		boolean existe = false;
 		String mensagem = "";
-		String resultado = rnCliente.validarCampos(cliente);
-		if (!resultado.equals("") || resultado.length() != 0)
+		String resultado = rnPerfil.validarCampos(perfil);
+		if (resultado.equals(""))
 		{
-			existe = rnCliente.verificarClienteExistente(cliente);
+			existe = rnPerfil.verificarPerfilExistente(perfil);
 			if (existe == false)
 			{
 				try
 				{
-					clienteDAO = DAOFactory.getClienteDAO();
-					clienteDAO.inserir(cliente);
-					mensagem = msg.getMsg_cliente_cadastrado_com_sucesso();
+					perfilDAO = DAOFactory.getPerfilDAO();
+					perfilDAO.inserir(perfil);
+					mensagem = msg.getMsg_perfil_cadastrado_com_sucesso();
 				}
 				catch (ClienteExistenteException e)
 				{
-					e.printStackTrace();
-					mensagem = e.getMessage();
+					// e.printStackTrace();
 				}
 				catch (ProdutoExistenteException e)
 				{
@@ -104,7 +104,8 @@ public class ControladorCliente implements IControladorCliente
 				}
 				catch (PerfilExistenteException e)
 				{
-					// e.printStackTrace();
+					e.printStackTrace();
+					mensagem = e.getMessage();
 				}
 			}
 		}
@@ -112,34 +113,31 @@ public class ControladorCliente implements IControladorCliente
 		return mensagem;
 	}
 
-	/**
-	 * Essse método altera um cliente já cadastrado
-	 **/
 	@PUT
 	@Produces("application/json; charset=UTF-8")
 	@Consumes("application/json; charset=UTF-8")
-	@Path("/alterarCliente")
-	public String alterarCliente(Cliente cliente)
+	@Path("/alterarPerfil")
+	@Override
+	public String alterarPerfil(Perfil perfil)
 	{
 		DAOFactory.abrir();
 		boolean existe = false;
 		String mensagem = "";
-		String resultado = rnCliente.validarCampos(cliente);
-		if (!resultado.equals("") || resultado.length() != 0)
+		String resultado = rnPerfil.validarCampos(perfil);
+		if (resultado.equals(""))
 		{
-			existe = rnCliente.verificarClienteExistente(cliente);
+			existe = rnPerfil.verificarPerfilExistente(perfil.getCodigo());
 			if (existe == true)
 			{
 				try
 				{
-					clienteDAO = DAOFactory.getClienteDAO();
-					clienteDAO.alterar(cliente);
-					mensagem = msg.getMsg_cliente_alterado_com_sucesso();
+					perfilDAO = DAOFactory.getPerfilDAO();
+					perfilDAO.alterar(perfil);
+					mensagem = msg.getMsg_perfil_alterado_com_sucesso();
 				}
 				catch (ClienteInexistenteException e)
 				{
-					e.printStackTrace();
-					mensagem = e.getMessage();
+					// e.printStackTrace();
 				}
 				catch (ProdutoInexistenteException e)
 				{
@@ -167,7 +165,8 @@ public class ControladorCliente implements IControladorCliente
 				}
 				catch (PerfilInexistenteException e)
 				{
-					// e.printStackTrace();
+					e.printStackTrace();
+					mensagem = e.getMessage();
 				}
 			}
 		}
@@ -175,30 +174,23 @@ public class ControladorCliente implements IControladorCliente
 		return mensagem;
 	}
 
-	/**
-	 * Excluindo um cliente pelo código
-	 */
-	@DELETE
+	@GET
 	@Produces("application/json; charset=UTF-8")
 	@Consumes("application/json; charset=UTF-8")
-	@Path("/excluirCliente/{codigo}")
+	@Path("/consultarTodosPerfis")
 	@Override
-	public String excluirCliente(@PathParam("codigo") int codigo)
+	public List<Perfil> consultarTodosPerfis()
 	{
 		DAOFactory.abrir();
-		String mensagem = "";
-		clienteDAO = DAOFactory.getClienteDAO();
+		List<Perfil> lista = new ArrayList<>();
 		try
 		{
-			Cliente c = clienteDAO.consultarPorId(codigo);
-			c.getUsuario().setStatus(Status.INATIVO);
-			clienteDAO.alterar(c);
-			mensagem = msg.getMsg_cliente_excluido_com_sucesso();
+			perfilDAO = DAOFactory.getPerfilDAO();
+			lista = perfilDAO.consultarTodos();
 		}
 		catch (ClienteInexistenteException e)
 		{
-			e.printStackTrace();
-			return e.getMessage();
+			// e.printStackTrace();
 		}
 		catch (ProdutoInexistenteException e)
 		{
@@ -226,119 +218,61 @@ public class ControladorCliente implements IControladorCliente
 		}
 		catch (PerfilInexistenteException e)
 		{
-			// e.printStackTrace();
-		}
-		DAOFactory.close();
-		return mensagem;
-	}
-
-	/**
-	 * Esse método lista todos os clientes cadastrados na base
-	 */
-	@GET
-	@Produces("application/json; charset=UTF-8")
-	@Consumes("application/json; charset=UTF-8")
-	@Path("/consultarTodosClientes")
-	public List<Cliente> consultarTodosClientes()
-	{
-		DAOFactory.abrir();
-		clienteDAO = DAOFactory.getClienteDAO();
-		List<Cliente> clientes = new ArrayList<>();
-		try
-		{
-			clientes = clienteDAO.consultarTodos();
-		}
-		catch (ClienteInexistenteException e)
-		{
 			e.printStackTrace();
 			e.getMessage();
 		}
-		catch (ProdutoInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (SupermercadoInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (UsuarioInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (CategoriaInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (MarcaInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (UnidadeMedidaInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (PerfilInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
 		DAOFactory.close();
-		if (clientes.isEmpty() || clientes.size() == 0)
+		if (!lista.isEmpty())
 		{
-			return null;
+			return lista;
 		}
-		return clientes;
+		return null;
 	}
 
-	/**
-	 * Esse método pesquisa o cliente cadastrado na base
-	 */
 	@GET
 	@Produces("application/json; charset=UTF-8")
 	@Consumes("application/json; charset=UTF-8")
-	@Path("/pesquisarCliente/{cpf}")
-	public Cliente pesquisarCliente(@PathParam("cpf") String cpf)
-	{
-		DAOFactory.abrir();
-		Cliente c = null;
-		try
-		{
-			clienteDAO = DAOFactory.getClienteDAO();
-			c = clienteDAO.pesquisarClientePorCPF(cpf);
-		}
-		catch (ClienteInexistenteException e)
-		{
-			e.printStackTrace();
-			e.getMessage();
-		}
-		if (c == null)
-		{
-			return null;
-		}
-		DAOFactory.close();
-		return c;
-	}
-
-	/**
-	 * Esse método pesquisa o cliente cadastrado na base
-	 */
-	@GET
-	@Produces("application/json; charset=UTF-8")
-	@Consumes("application/json; charset=UTF-8")
-	@Path("/pesquisarClientePorId/{codigo}")
+	@Path("/pesquisarPerfilPorNome/{nome}")
 	@Override
-	public Cliente pesquisarClientePorId(@PathParam("codigo") int codigo)
+	public Perfil pesquisarPerfilPorNome(@PathParam("nome") String nome)
 	{
 		DAOFactory.abrir();
-		Cliente cliente = null;
+		Perfil p = null;
+		perfilDAO = DAOFactory.getPerfilDAO();
 		try
 		{
-			clienteDAO = DAOFactory.getClienteDAO();
-			cliente = clienteDAO.consultarPorId(codigo);
+			p = perfilDAO.pesquisarPerfilPorNome(nome);
 		}
-		catch (ClienteInexistenteException e)
+		catch (PerfilInexistenteException e)
 		{
 			e.printStackTrace();
 			e.getMessage();
+		}
+		DAOFactory.close();
+		if (p == null)
+		{
+			return null;
+		}
+		return p;
+	}
+
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Consumes("application/json; charset=UTF-8")
+	@Path("/pesquisarPerfilPorId/{codigo}")
+	@Override
+	public Perfil pesquisarPerfilPorId(@PathParam("codigo") int codigo)
+	{
+		DAOFactory.abrir();
+		Perfil p = null;
+		try
+		{
+			perfilDAO = DAOFactory.getPerfilDAO();
+			p = perfilDAO.consultarPorId(codigo);
+		}
+		catch (ClienteInexistenteException e)
+		{
+			// e.printStackTrace();
 		}
 		catch (ProdutoInexistenteException e)
 		{
@@ -366,13 +300,14 @@ public class ControladorCliente implements IControladorCliente
 		}
 		catch (PerfilInexistenteException e)
 		{
-			// e.printStackTrace();
+			e.printStackTrace();
+			e.getMessage();
 		}
 		DAOFactory.close();
-		if (cliente == null)
+		if (p == null)
 		{
 			return null;
 		}
-		return cliente;
+		return p;
 	}
 }

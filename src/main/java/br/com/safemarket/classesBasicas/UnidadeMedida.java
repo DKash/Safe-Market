@@ -10,11 +10,16 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * @author Audry Martins
  *
  */
+@NamedQueries(
+{ @NamedQuery(name = "UnidadeMedida.findAllActives", query = "SELECT um FROM UnidadeMedida um WHERE um.status =:status"),
+		@NamedQuery(name = "UnidadeMedida.findByName", query = "SELECT um FROM UnidadeMedida um WHERE um.nome LIKE :nome") })
 @Entity
 public class UnidadeMedida
 {

@@ -3,10 +3,14 @@
  */
 package br.com.safemarket.dados;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import br.com.safemarket.classesBasicas.Categoria;
+import br.com.safemarket.classesBasicas.Status;
+import br.com.safemarket.dados.gererics.DAOGenerico;
 import br.com.safemarket.interfaces.dao.ICategoriaDAO;
 
 /**
@@ -28,19 +32,34 @@ public class CategoriaDAO extends DAOGenerico<Categoria> implements ICategoriaDA
 	// Métodos
 	public Categoria pesquisarCategoriaPorNome(String nome)
 	{
-		String consulta = "SELECT cat FROM Categoria cat WHERE cat.nome = :N";
-		TypedQuery<Categoria> retorno = getEntityManager().createQuery(consulta, Categoria.class);
-		retorno.setParameter("N", nome);
-		Categoria resultado;
+		TypedQuery<Categoria> query = this.entityManager.createNamedQuery("Categoria.findByName",
+				this.classePersistente);
+		query.setParameter("nome", nome);
 		try
 		{
-			resultado = retorno.getSingleResult();
-			return resultado;
+			return query.setMaxResults(1).getSingleResult();
 		}
 		catch (Exception e)
 		{
-			return null;
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public List<Categoria> consultarTodosAtivos()
+	{
+		TypedQuery<Categoria> query = this.entityManager.createNamedQuery("Categoria.findAllActives",
+				this.classePersistente);
+		query.setParameter("status", Status.ATIVO);
+		try
+		{
+			return query.getResultList();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	// Gets e Sets

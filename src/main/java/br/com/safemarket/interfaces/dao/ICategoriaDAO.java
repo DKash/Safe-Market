@@ -5,6 +5,7 @@ package br.com.safemarket.interfaces.dao;
 
 import br.com.safemarket.classesBasicas.Categoria;
 import br.com.safemarket.exceptions.CategoriaInexistenteException;
+import br.com.safemarket.interfaces.dao.generics.IDAOGenerico;
 
 /**
  * @author Audry Martins

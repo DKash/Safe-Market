@@ -1,14 +1,13 @@
-package br.com.safemarket.dados;
+package br.com.safemarket.dados.gererics;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
-import br.com.safemarket.interfaces.dao.IDAOGenerico;
+import br.com.safemarket.interfaces.dao.generics.IDAOGenerico;
 
 /**
  * @author Audry Martins
@@ -72,6 +71,7 @@ public abstract class DAOGenerico<Entidade> implements IDAOGenerico<Entidade>
 			tx.begin();
 			objeto = getEntityManager().merge(objeto);
 			tx.commit();
+			System.out.println(classePersistente.getSimpleName() + " alterado com sucesso");
 		}
 		catch (Exception e)
 		{
@@ -133,35 +133,6 @@ public abstract class DAOGenerico<Entidade> implements IDAOGenerico<Entidade>
 			re.printStackTrace();
 		}
 		return instance;
-	}
-
-	/**
-	 * Salva o objeto atual na base de dados.
-	 * 
-	 * @param objeto
-	 *            a ser salvo
-	 */
-	public final void inserirColecao(Collection<Entidade> colecao)
-	{
-		EntityTransaction tx = getEntityManager().getTransaction();
-		try
-		{
-			tx.begin();
-			for (Entidade entidade : colecao)
-			{
-				getEntityManager().persist(entidade);
-			}
-			tx.commit();
-			System.out.println(classePersistente.getSimpleName() + " salvos com sucesso: " + colecao.size());
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			if (tx != null && tx.isActive())
-			{
-				tx.rollback();
-			}
-		}
 	}
 
 	// Gets e Sets

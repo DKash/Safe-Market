@@ -21,6 +21,12 @@ public class Mensagens
 
 	private String msg_produto_excluido_com_sucesso;
 
+	private String msg_perfil_cadastrado_com_sucesso;
+
+	private String msg_perfil_alterado_com_sucesso;
+
+	private String msg_perfil_excluido_com_sucesso;
+
 	private String msg_categoria_cadastrada_com_sucesso;
 
 	private String msg_categoria_alterada_com_sucesso;
@@ -66,6 +72,9 @@ public class Mensagens
 		this.msg_produto_cadastrado_com_sucesso = "O produto foi cadastrado com sucesso.";
 		this.msg_produto_alterado_com_sucesso = "O produto foi alterado com sucesso.";
 		this.msg_produto_excluido_com_sucesso = "O produto foi excluido com sucesso.";
+		this.msg_perfil_cadastrado_com_sucesso = "O perfil foi cadastrado com sucesso.";
+		this.msg_perfil_alterado_com_sucesso = "O perfil foi alterado com sucesso.";
+		this.msg_perfil_excluido_com_sucesso = "O perfil foi excluido com sucesso.";
 		this.msg_categoria_cadastrada_com_sucesso = "A categoria foi cadastrada com sucesso.";
 		this.msg_categoria_alterada_com_sucesso = "A categoria foi alterada com sucesso.";
 		this.msg_categoria_excluida_com_sucesso = "A categoria foi excluida com sucesso.";
@@ -91,6 +100,9 @@ public class Mensagens
 	 * @param msg_produto_cadastrado_com_sucesso
 	 * @param msg_produto_alterado_com_sucesso
 	 * @param msg_produto_excluido_com_sucesso
+	 * @param msg_perfil_cadastrado_com_sucesso
+	 * @param msg_perfil_alterado_com_sucesso
+	 * @param msg_perfil_excluido_com_sucesso
 	 * @param msg_categoria_cadastrada_com_sucesso
 	 * @param msg_categoria_alterada_com_sucesso
 	 * @param msg_categoria_excluida_com_sucesso
@@ -111,14 +123,15 @@ public class Mensagens
 	public Mensagens(String msg_cliente_cadastrado_com_sucesso, String msg_cliente_alterado_com_sucesso,
 			String msg_cliente_excluido_com_sucesso, String msg_produto_cadastrado_com_sucesso,
 			String msg_produto_alterado_com_sucesso, String msg_produto_excluido_com_sucesso,
-			String msg_categoria_cadastrada_com_sucesso, String msg_categoria_alterada_com_sucesso,
-			String msg_categoria_excluida_com_sucesso, String msg_marca_cadastrada_com_sucesso,
-			String msg_marca_alterada_com_sucesso, String msg_marca_excluida_com_sucesso,
-			String msg_unidadeMedida_cadastrada_com_sucesso, String msg_unidadeMedida_alterada_com_sucesso,
-			String msg_unidadeMedida_excluida_com_sucesso, String msg_supermercado_cadastrado_com_sucesso,
-			String msg_supermercado_alterado_com_sucesso, String msg_supermercado_excluido_com_sucesso,
-			String msg_usuario_cadastrado_com_sucesso, String msg_usuario_alterado_com_sucesso,
-			String msg_usuario_excluido_com_sucesso, String msg_campo_invalido)
+			String msg_perfil_cadastrado_com_sucesso, String msg_perfil_alterado_com_sucesso,
+			String msg_perfil_excluido_com_sucesso, String msg_categoria_cadastrada_com_sucesso,
+			String msg_categoria_alterada_com_sucesso, String msg_categoria_excluida_com_sucesso,
+			String msg_marca_cadastrada_com_sucesso, String msg_marca_alterada_com_sucesso,
+			String msg_marca_excluida_com_sucesso, String msg_unidadeMedida_cadastrada_com_sucesso,
+			String msg_unidadeMedida_alterada_com_sucesso, String msg_unidadeMedida_excluida_com_sucesso,
+			String msg_supermercado_cadastrado_com_sucesso, String msg_supermercado_alterado_com_sucesso,
+			String msg_supermercado_excluido_com_sucesso, String msg_usuario_cadastrado_com_sucesso,
+			String msg_usuario_alterado_com_sucesso, String msg_usuario_excluido_com_sucesso, String msg_campo_invalido)
 	{
 		super();
 		this.msg_cliente_cadastrado_com_sucesso = msg_cliente_cadastrado_com_sucesso;
@@ -127,6 +140,9 @@ public class Mensagens
 		this.msg_produto_cadastrado_com_sucesso = msg_produto_cadastrado_com_sucesso;
 		this.msg_produto_alterado_com_sucesso = msg_produto_alterado_com_sucesso;
 		this.msg_produto_excluido_com_sucesso = msg_produto_excluido_com_sucesso;
+		this.msg_perfil_cadastrado_com_sucesso = msg_perfil_cadastrado_com_sucesso;
+		this.msg_perfil_alterado_com_sucesso = msg_perfil_alterado_com_sucesso;
+		this.msg_perfil_excluido_com_sucesso = msg_perfil_excluido_com_sucesso;
 		this.msg_categoria_cadastrada_com_sucesso = msg_categoria_cadastrada_com_sucesso;
 		this.msg_categoria_alterada_com_sucesso = msg_categoria_alterada_com_sucesso;
 		this.msg_categoria_excluida_com_sucesso = msg_categoria_excluida_com_sucesso;
@@ -192,6 +208,30 @@ public class Mensagens
 	public String getMsg_produto_excluido_com_sucesso()
 	{
 		return msg_produto_excluido_com_sucesso;
+	}
+
+	/**
+	 * @return the msg_perfil_cadastrado_com_sucesso
+	 */
+	public String getMsg_perfil_cadastrado_com_sucesso()
+	{
+		return msg_perfil_cadastrado_com_sucesso;
+	}
+
+	/**
+	 * @return the msg_perfil_alterado_com_sucesso
+	 */
+	public String getMsg_perfil_alterado_com_sucesso()
+	{
+		return msg_perfil_alterado_com_sucesso;
+	}
+
+	/**
+	 * @return the msg_perfil_excluido_com_sucesso
+	 */
+	public String getMsg_perfil_excluido_com_sucesso()
+	{
+		return msg_perfil_excluido_com_sucesso;
 	}
 
 	/**

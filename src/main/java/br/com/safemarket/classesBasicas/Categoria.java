@@ -10,11 +10,16 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * @author Audry Martins
  *
  */
+@NamedQueries(
+{ @NamedQuery(name = "Categoria.findAllActives", query = "SELECT c FROM Categoria c WHERE c.status =:status"),
+		@NamedQuery(name = "Categoria.findByName", query = "SELECT c FROM Categoria c WHERE c.nome LIKE :nome") })
 @Entity
 public class Categoria
 {
@@ -56,8 +61,7 @@ public class Categoria
 		this.status = status;
 	}
 
-	//Gets e Sets
-	
+	// Gets e Sets
 	/**
 	 * @return the codigo
 	 */
@@ -67,7 +71,8 @@ public class Categoria
 	}
 
 	/**
-	 * @param codigo the codigo to set
+	 * @param codigo
+	 *            the codigo to set
 	 */
 	public void setCodigo(Integer codigo)
 	{
@@ -83,7 +88,8 @@ public class Categoria
 	}
 
 	/**
-	 * @param nome the nome to set
+	 * @param nome
+	 *            the nome to set
 	 */
 	public void setNome(String nome)
 	{
@@ -99,7 +105,8 @@ public class Categoria
 	}
 
 	/**
-	 * @param subcategoria the subcategoria to set
+	 * @param subcategoria
+	 *            the subcategoria to set
 	 */
 	public void setSubcategoria(String subcategoria)
 	{
@@ -115,7 +122,8 @@ public class Categoria
 	}
 
 	/**
-	 * @param status the status to set
+	 * @param status
+	 *            the status to set
 	 */
 	public void setStatus(Status status)
 	{

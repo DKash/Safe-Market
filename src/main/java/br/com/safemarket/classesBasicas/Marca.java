@@ -10,11 +10,16 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * @author Audry Martins
  *
  */
+@NamedQueries(
+{ @NamedQuery(name = "Marca.findAllActives", query = "SELECT m FROM Marca m WHERE m.status =:status"),
+		@NamedQuery(name = "Marca.findByName", query = "SELECT m FROM Marca m WHERE m.nome LIKE :nome") })
 @Entity
 public class Marca
 {

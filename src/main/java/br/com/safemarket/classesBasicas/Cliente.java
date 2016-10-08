@@ -9,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -17,6 +19,14 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+/**
+ * @author Audry Martins
+ *
+ */
+@NamedQueries(
+{ @NamedQuery(name = "Cliente.findAllActives", query = "SELECT c FROM Cliente c WHERE c.usuario.status =:status"),
+		@NamedQuery(name = "Cliente.findByName", query = "SELECT c FROM Cliente c WHERE c.nome LIKE :nome"),
+		@NamedQuery(name = "Cliente.findByCPF", query = "SELECT c FROM Cliente c WHERE c.cpf = :cpf") })
 @Entity
 public class Cliente
 {
@@ -28,7 +38,7 @@ public class Cliente
 	@Column(length = 80, nullable = false)
 	private String nome;
 
-	@Column(length = 14, nullable = false)
+	@Column(length = 14, nullable = false, unique = true)
 	private String cpf;
 
 	@Column(length = 13, nullable = true)

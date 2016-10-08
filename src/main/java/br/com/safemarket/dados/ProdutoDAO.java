@@ -1,9 +1,13 @@
 package br.com.safemarket.dados;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import br.com.safemarket.classesBasicas.Produto;
+import br.com.safemarket.classesBasicas.Status;
+import br.com.safemarket.dados.gererics.DAOGenerico;
 import br.com.safemarket.interfaces.dao.IProdutoDAO;
 
 /**
@@ -25,36 +29,63 @@ public class ProdutoDAO extends DAOGenerico<Produto> implements IProdutoDAO
 	// Métodos
 	public Produto pesquisarProdutoPorNome(String nome)
 	{
-		String consulta = "SELECT p FROM Produto p WHERE p.nome = :N";
-		TypedQuery<Produto> retorno = getEntityManager().createQuery(consulta, Produto.class);
-		retorno.setParameter("N", nome);
-		Produto resultado;
+		TypedQuery<Produto> query = this.entityManager.createNamedQuery("Produto.findByName", this.classePersistente);
+		query.setParameter("nome", nome);
 		try
 		{
-			resultado = retorno.getSingleResult();
-			return resultado;
+			return query.setMaxResults(1).getSingleResult();
 		}
 		catch (Exception e)
 		{
-			return null;
+			e.printStackTrace();
 		}
+		return null;
 	}
 
-	public Produto pesquisarProdutoPorPreco(double preco)
+	public List<Produto> pesquisarProdutosPorMarca(String marca)
 	{
-		String consulta = "SELECT p FROM Produto p WHERE p.preco = :N";
-		TypedQuery<Produto> retorno = getEntityManager().createQuery(consulta, Produto.class);
-		retorno.setParameter("N", preco);
-		Produto resultado;
+		TypedQuery<Produto> query = this.entityManager.createNamedQuery("Produto.findByMark", this.classePersistente);
+		query.setParameter("marca", marca);
 		try
 		{
-			resultado = retorno.getSingleResult();
-			return resultado;
+			return query.getResultList();
 		}
 		catch (Exception e)
 		{
-			return null;
+			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public List<Produto> pesquisarProdutosPorPreco(double preco)
+	{
+		TypedQuery<Produto> query = this.entityManager.createNamedQuery("Produto.findByPrice", this.classePersistente);
+		query.setParameter("preco", preco);
+		try
+		{
+			return query.getResultList();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<Produto> consultarTodosAtivos()
+	{
+		TypedQuery<Produto> query = this.entityManager.createNamedQuery("Produto.findAllActives",
+				this.classePersistente);
+		query.setParameter("status", Status.DISPONIVEL);
+		try
+		{
+			return query.getResultList();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	// Gets e Sets

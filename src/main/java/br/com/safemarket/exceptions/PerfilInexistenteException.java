@@ -7,14 +7,13 @@ package br.com.safemarket.exceptions;
  * @author Audry Martins
  *
  */
-public class CategoriaExistenteException extends Exception
+public class PerfilInexistenteException extends Exception
 {
 	// Atributos
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	// Métodos
 	/*
 	 * (non-Javadoc)
@@ -23,6 +22,6 @@ public class CategoriaExistenteException extends Exception
 	@Override
 	public String getMessage()
 	{
-		return "A Categoria já existe";
+		return "Perfil inexistente";
 	}
 }

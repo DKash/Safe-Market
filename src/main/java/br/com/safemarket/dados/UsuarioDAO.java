@@ -1,10 +1,13 @@
 package br.com.safemarket.dados;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
+import br.com.safemarket.classesBasicas.Status;
 import br.com.safemarket.classesBasicas.Usuario;
+import br.com.safemarket.dados.gererics.DAOGenerico;
 import br.com.safemarket.interfaces.dao.IUsuarioDAO;
 
 /**
@@ -13,53 +16,65 @@ import br.com.safemarket.interfaces.dao.IUsuarioDAO;
  */
 public class UsuarioDAO extends DAOGenerico<Usuario> implements IUsuarioDAO
 {
+	// Atributos
 	private EntityManager manager;
 
+	// Construtores
 	public UsuarioDAO(EntityManager em)
 	{
 		super(em);
 		this.setManager(em);
 	}
 
-	public Usuario efetuarLogin(Usuario usuario)
+	// Métodos
+	public List<Usuario> consultarTodosAtivos()
 	{
-		EntityTransaction tx = getEntityManager().getTransaction();
+		TypedQuery<Usuario> query = this.entityManager.createNamedQuery("Usuario.findAllActives",
+				this.classePersistente);
+		query.setParameter("status", Status.ATIVO);
 		try
 		{
-			String sql = "SELECT u FROM Usuario WHERE u.email = :email and u.senha = :senha";
-			TypedQuery<Usuario> queryUsuario = this.entityManager.createQuery(sql, Usuario.class);
-			queryUsuario.setParameter("email", usuario.getEmail());
-			queryUsuario.setParameter("senha", usuario.getSenha());
-			usuario = queryUsuario.getSingleResult();
-			return usuario;
+			return query.getResultList();
 		}
 		catch (Exception e)
 		{
-			if (tx != null && tx.isActive())
-			{
-				tx.rollback();
-			}
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Usuario efetuarLogin(Usuario usuario)
+	{
+		TypedQuery<Usuario> query = this.entityManager.createNamedQuery("Usuario.signIn", this.classePersistente);
+		query.setParameter("email", usuario.getEmail());
+		query.setParameter("senha", usuario.getSenha());
+		try
+		{
+			return query.setMaxResults(1).getSingleResult();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		return null;
 	}
 
 	public Usuario pesquisarUsuarioPorEmail(String email)
 	{
-		String consulta = "SELECT u FROM Usuario u WHERE u.email = :email";
-		TypedQuery<Usuario> retorno = getEntityManager().createQuery(consulta, Usuario.class);
-		retorno.setParameter("email", email);
-		Usuario resultado;
+		TypedQuery<Usuario> query = this.entityManager.createNamedQuery("Usuario.findByEmail", this.classePersistente);
+		query.setParameter("email", email);
 		try
 		{
-			resultado = retorno.getSingleResult();
-			return resultado;
+			return query.setMaxResults(1).getSingleResult();
 		}
 		catch (Exception e)
 		{
-			return null;
+			e.printStackTrace();
 		}
+		return null;
 	}
 
+	// Gets e Sets
 	public EntityManager getManager()
 	{
 		return manager;

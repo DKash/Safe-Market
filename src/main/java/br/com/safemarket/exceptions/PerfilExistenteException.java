@@ -7,7 +7,7 @@ package br.com.safemarket.exceptions;
  * @author Audry Martins
  *
  */
-public class CategoriaExistenteException extends Exception
+public class PerfilExistenteException extends Exception
 {
 	// Atributos
 	/**
@@ -23,6 +23,6 @@ public class CategoriaExistenteException extends Exception
 	@Override
 	public String getMessage()
 	{
-		return "A Categoria já existe";
+		return "O Perfil já existe";
 	}
 }

@@ -4,10 +4,11 @@
 package br.com.safemarket.negocio.regras;
 
 import br.com.safemarket.classesBasicas.UnidadeMedida;
-import br.com.safemarket.dados.DAOFactory;
+import br.com.safemarket.dados.gererics.DAOFactory;
 import br.com.safemarket.exceptions.CategoriaInexistenteException;
 import br.com.safemarket.exceptions.ClienteInexistenteException;
 import br.com.safemarket.exceptions.MarcaInexistenteException;
+import br.com.safemarket.exceptions.PerfilInexistenteException;
 import br.com.safemarket.exceptions.ProdutoInexistenteException;
 import br.com.safemarket.exceptions.SupermercadoInexistenteException;
 import br.com.safemarket.exceptions.UnidadeMedidaInexistenteException;
@@ -61,6 +62,10 @@ public class RNUnidadeMedida
 		{
 			e.printStackTrace();
 			e.getMessage();
+		}
+		catch (PerfilInexistenteException e)
+		{
+			// Oe.printStackTrace();
 		}
 		return um;
 	}

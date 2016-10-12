@@ -6,7 +6,7 @@ package br.com.safemarket.negocio.regras;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.safemarket.classesBasicas.Cliente;
+import br.com.safemarket.classesBasicas.Endereco;
 import br.com.safemarket.dados.gererics.DAOFactory;
 import br.com.safemarket.exceptions.CategoriaInexistenteException;
 import br.com.safemarket.exceptions.ClienteInexistenteException;
@@ -16,33 +16,34 @@ import br.com.safemarket.exceptions.ProdutoInexistenteException;
 import br.com.safemarket.exceptions.SupermercadoInexistenteException;
 import br.com.safemarket.exceptions.UnidadeMedidaInexistenteException;
 import br.com.safemarket.exceptions.UsuarioInexistenteException;
-import br.com.safemarket.interfaces.dao.IClienteDAO;
+import br.com.safemarket.interfaces.dao.IEnderecoDAO;
 import br.com.safemarket.util.Mensagens;
 
 /**
  * @author Audry Martins
  *
  */
-public class RNCliente
+public class RNEndereco
 {
 	// Atributos
-	private IClienteDAO clienteDAO;
+	private IEnderecoDAO enderecoDAO;
 
 	Mensagens msg = new Mensagens();
 
 	// Métodos
-	public String validarCampos(Cliente cliente)
+	public String validarCampos(Endereco endereco)
 	{
 		List<String> campos = new ArrayList<>();
-		if (cliente.getNome() == null || (cliente.getNome().equals(""))) campos.add(cliente.getNome());
-		if (cliente.getCpf() == null || (cliente.getCpf().equals(""))) campos.add(cliente.getCpf());
-		if (cliente.getCelular() == null || (cliente.getCelular().equals("")))
-			campos.add(cliente.getCelular().toString());
-		if (cliente.getUsuario().getCodigo() == 0) campos.add(String.valueOf(cliente.getUsuario().getCodigo()));
-		if (cliente.getEndereco().getCodigo() == 0) campos.add(String.valueOf(cliente.getEndereco().getCodigo()));
+		if (endereco.getLogradouro() == null || (endereco.getLogradouro().equals("")))
+			campos.add(endereco.getLogradouro());
+		if (endereco.getNumero() == 0) campos.add(String.valueOf(endereco.getNumero()));
+		if (endereco.getBairro() == null || (endereco.getBairro().equals(""))) campos.add(endereco.getBairro());
+		if (endereco.getCidade() == null || (endereco.getCidade().equals("")))
+			campos.add(endereco.getCidade().toString());
+		if (endereco.getCep() == null || (endereco.getCep().equals(""))) campos.add(endereco.getCep());
 		int tam = campos.size();
 		String resultado = "";
-		while (tam > 0)
+		while (tam >= 0)
 		{
 			resultado += " " + msg.getMsg_campo_invalido() + campos.get(tam);
 			tam--;
@@ -50,35 +51,13 @@ public class RNCliente
 		return resultado;
 	}
 
-	public boolean verificarClienteExistente(Cliente cliente)
+	public Endereco verificarEnderecoExistente(int codigo)
 	{
-		clienteDAO = DAOFactory.getClienteDAO();
-		Cliente c = null;
+		enderecoDAO = DAOFactory.getEnderecoDAO();
+		Endereco end = null;
 		try
 		{
-			c = clienteDAO.pesquisarClientePorCPF(cliente.getCpf());
-		}
-		catch (ClienteInexistenteException e)
-		{
-			e.printStackTrace();
-			e.getMessage();
-		}
-		if (c == null)
-		{
-			return false;
-		} else
-		{
-			return true;
-		}
-	}
-
-	public boolean verificarClienteExistente(int codigo)
-	{
-		clienteDAO = DAOFactory.getClienteDAO();
-		Cliente c = null;
-		try
-		{
-			c = clienteDAO.consultarPorId(codigo);
+			end = enderecoDAO.consultarPorId(codigo);
 		}
 		catch (ClienteInexistenteException | ProdutoInexistenteException | SupermercadoInexistenteException
 				| UsuarioInexistenteException | CategoriaInexistenteException | MarcaInexistenteException
@@ -86,12 +65,10 @@ public class RNCliente
 		{
 			// e.printStackTrace();
 		}
-		if (c == null)
+		if (end == null)
 		{
-			return false;
-		} else
-		{
-			return true;
+			return null;
 		}
+		return end;
 	}
 }

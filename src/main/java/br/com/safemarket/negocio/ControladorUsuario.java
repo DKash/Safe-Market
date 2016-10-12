@@ -251,6 +251,62 @@ public class ControladorUsuario implements IControladorUsuario
 	}
 
 	/**
+	 * Esse método lista todos os Usuários cadastrados na base
+	 */
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Consumes("application/json; charset=UTF-8")
+	@Path("/consultarTodosUsuariosAtivos")
+	public List<Usuario> consultarTodosUsuariosAtivos()
+	{
+		DAOFactory.abrir();
+		List<Usuario> lista = new ArrayList<>();
+		try
+		{
+			usuarioDAO = DAOFactory.getUsuarioDAO();
+			lista = usuarioDAO.consultarTodosAtivos();
+		}
+		catch (ClienteInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (ProdutoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (SupermercadoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UsuarioInexistenteException e)
+		{
+			e.printStackTrace();
+		}
+		catch (CategoriaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (MarcaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		DAOFactory.close();
+		if (!lista.isEmpty())
+		{
+			return lista;
+		}
+		return null;
+	}
+
+	/**
 	 * Excluindo um Usuário pelo código
 	 */
 	@DELETE
@@ -268,9 +324,15 @@ public class ControladorUsuario implements IControladorUsuario
 			user = usuarioDAO.consultarPorId(codigo);
 			if (user != null)
 			{
-				user.setStatus(Status.INATIVO);
-				usuarioDAO.alterar(user);
-				mensagem = msg.getMsg_usuario_excluido_com_sucesso();
+				if (user.getStatus() == Status.ATIVO)
+				{
+					user.setStatus(Status.INATIVO);
+					usuarioDAO.alterar(user);
+					mensagem = msg.getMsg_usuario_excluido_com_sucesso();
+				} else
+				{
+					mensagem = msg.getMsg_usuario_excluido_com_sucesso();
+				}
 			} else
 			{
 				mensagem = new UsuarioInexistenteException().getMessage();

@@ -27,23 +27,24 @@ import org.hibernate.annotations.FetchMode;
 public class Supermercado
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int codigo;
 
 	@Column(length = 50, nullable = true)
 	private String nome;
 
-	@Column(length = 20, nullable = false, unique = true)
+	@Column(length = 18, nullable = false, unique = true)
 	private String cnpj;
 
-	@Column(length = 50, nullable = false)
-	private String inscricaoEstatdual;
+	@Column(length = 14, nullable = false)
+	private String inscricaoEstadual;
 
 	@Column(length = 14, nullable = false)
 	private String telefone;
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@Fetch(FetchMode.JOIN)
 	private Endereco endereco;
 
 	@Column(length = 50, nullable = false)
@@ -60,7 +61,7 @@ public class Supermercado
 		super();
 		this.nome = "";
 		this.cnpj = "";
-		this.inscricaoEstatdual = "";
+		this.inscricaoEstadual = "";
 		this.telefone = "";
 		this.endereco = new Endereco();
 		this.email = "";
@@ -71,20 +72,20 @@ public class Supermercado
 	 * @param codigo
 	 * @param nome
 	 * @param cnpj
-	 * @param inscricaoEstatdual
+	 * @param inscricaoEstadual
 	 * @param telefone
 	 * @param endereco
 	 * @param email
 	 * @param usuario
 	 */
-	public Supermercado(int codigo, String nome, String cnpj, String inscricaoEstatdual, String telefone,
+	public Supermercado(int codigo, String nome, String cnpj, String inscricaoEstadual, String telefone,
 			Endereco endereco, String email, Usuario usuario)
 	{
 		super();
 		this.codigo = codigo;
 		this.nome = nome;
 		this.cnpj = cnpj;
-		this.inscricaoEstatdual = inscricaoEstatdual;
+		this.inscricaoEstadual = inscricaoEstadual;
 		this.telefone = telefone;
 		this.endereco = endereco;
 		this.email = email;
@@ -146,18 +147,18 @@ public class Supermercado
 	/**
 	 * @return the inscricaoEstatdual
 	 */
-	public String getInscricaoEstatdual()
+	public String getInscricaoEstadual()
 	{
-		return inscricaoEstatdual;
+		return inscricaoEstadual;
 	}
 
 	/**
-	 * @param inscricaoEstatdual
+	 * @param inscricaoEstadual
 	 *            the inscricaoEstatdual to set
 	 */
-	public void setInscricaoEstatdual(String inscricaoEstatdual)
+	public void setInscricaoEstadual(String inscricaoEstadual)
 	{
-		this.inscricaoEstatdual = inscricaoEstatdual;
+		this.inscricaoEstadual = inscricaoEstadual;
 	}
 
 	/**

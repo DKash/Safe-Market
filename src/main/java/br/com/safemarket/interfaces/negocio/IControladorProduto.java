@@ -21,7 +21,13 @@ public interface IControladorProduto
 
 	public List<Produto> consultarTodosProdutos() throws ProdutoInexistenteException;
 
+	public List<Produto> consultarTodosProdutosAtivos() throws ProdutoInexistenteException;
+
 	public Produto pesquisarProdutoPorNome(String nome) throws ProdutoInexistenteException;
+
+	public List<Produto> pesquisarProdutoPorMarca(String marca) throws ProdutoInexistenteException;
+
+	public List<Produto> pesquisarProdutoPorPreco(double preco) throws ProdutoInexistenteException;
 
 	public Produto pesquisarProdutoPorId(int codigo) throws ProdutoInexistenteException;
 }

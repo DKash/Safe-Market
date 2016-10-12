@@ -39,12 +39,11 @@ public class RNCategoria
 			campos.add(categoria.getSubcategoria());
 		int tam = campos.size();
 		String resultado = "";
-		do
+		while (tam > 0)
 		{
 			resultado += " " + msg.getMsg_campo_invalido() + campos.get(tam);
 			tam--;
 		}
-		while (tam >= 0);
 		return resultado;
 	}
 
@@ -68,6 +67,54 @@ public class RNCategoria
 		{
 			return true;
 		}
+	}
+
+	public boolean verificarCategoriaExistentePorId(int codigo)
+	{
+		categoriaDAO = DAOFactory.getCategoriaDAO();
+		Categoria c = new Categoria();
+		try
+		{
+			c.setCodigo(codigo);
+			c = categoriaDAO.consultarPorId(c.getCodigo());
+		}
+		catch (ClienteInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (ProdutoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (SupermercadoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UsuarioInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (CategoriaInexistenteException e)
+		{
+			e.printStackTrace();
+		}
+		catch (MarcaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		if (c == null)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public Categoria verificarCategoriaExistente(int codigo)

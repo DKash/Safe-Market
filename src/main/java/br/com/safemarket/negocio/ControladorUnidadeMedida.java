@@ -266,11 +266,68 @@ public class ControladorUnidadeMedida implements IControladorUnidadeMedida
 	public List<UnidadeMedida> consultarTodasUnidadeMedidas()
 	{
 		DAOFactory.abrir();
-		unidadeMedidaDAO = DAOFactory.getUnidadeMedidaDAO();
 		List<UnidadeMedida> lista = new ArrayList<>();
 		try
 		{
+			unidadeMedidaDAO = DAOFactory.getUnidadeMedidaDAO();
 			lista = unidadeMedidaDAO.consultarTodos();
+		}
+		catch (ClienteInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (ProdutoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (SupermercadoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UsuarioInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaInexistenteException e)
+		{
+			e.printStackTrace();
+		}
+		catch (MarcaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (CategoriaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		DAOFactory.close();
+		if (!lista.isEmpty())
+		{
+			return lista;
+		}
+		return null;
+	}
+
+	/**
+	 * Esse método lista todas as unidadeMedidas ativas cadastradas na base
+	 */
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Consumes("application/json; charset=UTF-8")
+	@Path("/consultarTodasUnidadeMedidasAtivas")
+	@Override
+	public List<UnidadeMedida> consultarTodasUnidadesMedidasAtivas()
+	{
+		DAOFactory.abrir();
+		List<UnidadeMedida> lista = new ArrayList<>();
+		try
+		{
+			unidadeMedidaDAO = DAOFactory.getUnidadeMedidaDAO();
+			lista = unidadeMedidaDAO.consultarTodosAtivos();
 		}
 		catch (ClienteInexistenteException e)
 		{

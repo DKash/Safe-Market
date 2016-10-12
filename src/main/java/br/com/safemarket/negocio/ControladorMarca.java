@@ -320,7 +320,7 @@ public class ControladorMarca implements IControladorMarca
 	@Consumes("application/json; charset=UTF-8")
 	@Path("/consultarTodasMarcasAtivas")
 	@Override
-	public List<Marca> consultarTodasMarcasAtivas() throws MarcaInexistenteException
+	public List<Marca> consultarTodasMarcasAtivas()
 	{
 		DAOFactory.abrir();
 		List<Marca> lista = new ArrayList<>();
@@ -433,11 +433,11 @@ public class ControladorMarca implements IControladorMarca
 		}
 		catch (CategoriaInexistenteException e)
 		{
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		catch (MarcaInexistenteException e)
 		{
-			// e.printStackTrace();
+			e.printStackTrace();
 		}
 		catch (PerfilInexistenteException e)
 		{

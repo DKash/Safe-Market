@@ -13,12 +13,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import br.com.safemarket.classesBasicas.Cliente;
+import br.com.safemarket.classesBasicas.Endereco;
 import br.com.safemarket.classesBasicas.Status;
+import br.com.safemarket.classesBasicas.Usuario;
 import br.com.safemarket.dados.gererics.DAOFactory;
 import br.com.safemarket.exceptions.CategoriaExistenteException;
 import br.com.safemarket.exceptions.CategoriaInexistenteException;
 import br.com.safemarket.exceptions.ClienteExistenteException;
 import br.com.safemarket.exceptions.ClienteInexistenteException;
+import br.com.safemarket.exceptions.EnderecoInexistenteException;
 import br.com.safemarket.exceptions.MarcaExistenteException;
 import br.com.safemarket.exceptions.MarcaInexistenteException;
 import br.com.safemarket.exceptions.PerfilExistenteException;
@@ -34,6 +37,8 @@ import br.com.safemarket.exceptions.UsuarioInexistenteException;
 import br.com.safemarket.interfaces.dao.IClienteDAO;
 import br.com.safemarket.interfaces.negocio.IControladorCliente;
 import br.com.safemarket.negocio.regras.RNCliente;
+import br.com.safemarket.negocio.regras.RNEndereco;
+import br.com.safemarket.negocio.regras.RNUsuario;
 import br.com.safemarket.util.Mensagens;
 
 @Path("/service")
@@ -42,6 +47,10 @@ public class ControladorCliente implements IControladorCliente
 	private IClienteDAO clienteDAO;
 
 	private RNCliente rnCliente = new RNCliente();
+
+	private RNEndereco rnEndereco = new RNEndereco();
+
+	private RNUsuario rnUsuario = new RNUsuario();
 
 	Mensagens msg = new Mensagens();
 
@@ -62,7 +71,7 @@ public class ControladorCliente implements IControladorCliente
 		boolean existe = false;
 		String mensagem = "";
 		String resultado = rnCliente.validarCampos(cliente);
-		if (!resultado.equals("") || resultado.length() != 0)
+		if (resultado.equals(""))
 		{
 			existe = rnCliente.verificarClienteExistente(cliente);
 			if (existe == false)
@@ -70,8 +79,24 @@ public class ControladorCliente implements IControladorCliente
 				try
 				{
 					clienteDAO = DAOFactory.getClienteDAO();
-					clienteDAO.inserir(cliente);
-					mensagem = msg.getMsg_cliente_cadastrado_com_sucesso();
+					Endereco endereco = rnEndereco.verificarEnderecoExistente(cliente.getEndereco().getCodigo());
+					Usuario usuario = rnUsuario.verificarUsuarioExistente(cliente.getUsuario().getCodigo());
+					if (endereco != null)
+					{
+						cliente.setEndereco(endereco);
+						if (usuario != null)
+						{
+							cliente.setUsuario(usuario);
+							clienteDAO.inserir(cliente);
+							mensagem = msg.getMsg_cliente_cadastrado_com_sucesso();
+						} else
+						{
+							mensagem = new UsuarioInexistenteException().getMessage();
+						}
+					} else
+					{
+						mensagem = new EnderecoInexistenteException().getMessage();
+					}
 				}
 				catch (ClienteExistenteException e)
 				{
@@ -125,16 +150,32 @@ public class ControladorCliente implements IControladorCliente
 		boolean existe = false;
 		String mensagem = "";
 		String resultado = rnCliente.validarCampos(cliente);
-		if (!resultado.equals("") || resultado.length() != 0)
+		if (resultado.equals(""))
 		{
-			existe = rnCliente.verificarClienteExistente(cliente);
+			existe = rnCliente.verificarClienteExistente(cliente.getCodigo());
 			if (existe == true)
 			{
 				try
 				{
 					clienteDAO = DAOFactory.getClienteDAO();
-					clienteDAO.alterar(cliente);
-					mensagem = msg.getMsg_cliente_alterado_com_sucesso();
+					Endereco endereco = rnEndereco.verificarEnderecoExistente(cliente.getEndereco().getCodigo());
+					Usuario usuario = rnUsuario.verificarUsuarioExistente(cliente.getUsuario().getCodigo());
+					if (endereco != null)
+					{
+						cliente.setEndereco(endereco);
+						if (usuario != null)
+						{
+							cliente.setUsuario(usuario);
+							clienteDAO.alterar(cliente);
+							mensagem = msg.getMsg_cliente_alterado_com_sucesso();
+						} else
+						{
+							mensagem = new UsuarioInexistenteException().getMessage();
+						}
+					} else
+					{
+						mensagem = new EnderecoInexistenteException().getMessage();
+					}
 				}
 				catch (ClienteInexistenteException e)
 				{
@@ -187,18 +228,30 @@ public class ControladorCliente implements IControladorCliente
 	{
 		DAOFactory.abrir();
 		String mensagem = "";
-		clienteDAO = DAOFactory.getClienteDAO();
 		try
 		{
+			clienteDAO = DAOFactory.getClienteDAO();
 			Cliente c = clienteDAO.consultarPorId(codigo);
-			c.getUsuario().setStatus(Status.INATIVO);
-			clienteDAO.alterar(c);
-			mensagem = msg.getMsg_cliente_excluido_com_sucesso();
+			if (c != null)
+			{
+				if (c.getUsuario().getStatus() == Status.ATIVO)
+				{
+					c.getUsuario().setStatus(Status.INATIVO);
+					clienteDAO.alterar(c);
+					mensagem = msg.getMsg_cliente_excluido_com_sucesso();
+				} else
+				{
+					mensagem = msg.getMsg_cliente_excluido_com_sucesso();
+				}
+			} else
+			{
+				mensagem = new ClienteInexistenteException().getMessage();
+			}
 		}
 		catch (ClienteInexistenteException e)
 		{
 			e.printStackTrace();
-			return e.getMessage();
+			mensagem = e.getMessage();
 		}
 		catch (ProdutoInexistenteException e)
 		{
@@ -243,15 +296,14 @@ public class ControladorCliente implements IControladorCliente
 	{
 		DAOFactory.abrir();
 		clienteDAO = DAOFactory.getClienteDAO();
-		List<Cliente> clientes = new ArrayList<>();
+		List<Cliente> lista = new ArrayList<>();
 		try
 		{
-			clientes = clienteDAO.consultarTodos();
+			lista = clienteDAO.consultarTodos();
 		}
 		catch (ClienteInexistenteException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
 		catch (ProdutoInexistenteException e)
 		{
@@ -282,11 +334,67 @@ public class ControladorCliente implements IControladorCliente
 			// e.printStackTrace();
 		}
 		DAOFactory.close();
-		if (clientes.isEmpty() || clientes.size() == 0)
+		if (!lista.isEmpty())
 		{
-			return null;
+			return lista;
 		}
-		return clientes;
+		return null;
+	}
+
+	/**
+	 * Esse método lista todos os clientes cadastrados na base
+	 */
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Consumes("application/json; charset=UTF-8")
+	@Path("/consultarTodosClientesAtivos")
+	public List<Cliente> consultarTodosClientesAtivos()
+	{
+		DAOFactory.abrir();
+		List<Cliente> lista = new ArrayList<>();
+		try
+		{
+			clienteDAO = DAOFactory.getClienteDAO();
+			lista = clienteDAO.consultarTodosAtivos();
+		}
+		catch (ClienteInexistenteException e)
+		{
+			e.printStackTrace();
+		}
+		catch (ProdutoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (SupermercadoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UsuarioInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (CategoriaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (MarcaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		DAOFactory.close();
+		if (!lista.isEmpty())
+		{
+			return lista;
+		}
+		return null;
 	}
 
 	/**
@@ -295,7 +403,7 @@ public class ControladorCliente implements IControladorCliente
 	@GET
 	@Produces("application/json; charset=UTF-8")
 	@Consumes("application/json; charset=UTF-8")
-	@Path("/pesquisarCliente/{cpf}")
+	@Path("/pesquisarClientePorCPF/{cpf}")
 	public Cliente pesquisarCliente(@PathParam("cpf") String cpf)
 	{
 		DAOFactory.abrir();
@@ -308,13 +416,12 @@ public class ControladorCliente implements IControladorCliente
 		catch (ClienteInexistenteException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
+		DAOFactory.close();
 		if (c == null)
 		{
 			return null;
 		}
-		DAOFactory.close();
 		return c;
 	}
 
@@ -329,16 +436,15 @@ public class ControladorCliente implements IControladorCliente
 	public Cliente pesquisarClientePorId(@PathParam("codigo") int codigo)
 	{
 		DAOFactory.abrir();
-		Cliente cliente = null;
+		Cliente c = null;
 		try
 		{
 			clienteDAO = DAOFactory.getClienteDAO();
-			cliente = clienteDAO.consultarPorId(codigo);
+			c = clienteDAO.consultarPorId(codigo);
 		}
 		catch (ClienteInexistenteException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
 		catch (ProdutoInexistenteException e)
 		{
@@ -369,10 +475,10 @@ public class ControladorCliente implements IControladorCliente
 			// e.printStackTrace();
 		}
 		DAOFactory.close();
-		if (cliente == null)
+		if (c == null)
 		{
 			return null;
 		}
-		return cliente;
+		return c;
 	}
 }

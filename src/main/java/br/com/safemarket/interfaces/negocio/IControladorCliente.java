@@ -24,6 +24,8 @@ public interface IControladorCliente
 
 	public List<Cliente> consultarTodosClientes() throws ClienteInexistenteException;
 
+	public List<Cliente> consultarTodosClientesAtivos() throws ClienteInexistenteException;
+
 	public Cliente pesquisarCliente(String cpf) throws ClienteInexistenteException;
 
 	public Cliente pesquisarClientePorId(int codigo) throws ClienteInexistenteException;

@@ -25,12 +25,12 @@ import org.hibernate.annotations.FetchMode;
 { @NamedQuery(name = "Produto.findAllActives", query = "SELECT p FROM Produto p WHERE p.status =:status"),
 		@NamedQuery(name = "Produto.findByName", query = "SELECT p FROM Produto p WHERE p.nome LIKE :nome"),
 		@NamedQuery(name = "Produto.findByMark", query = "SELECT p FROM Produto p WHERE p.marca.nome LIKE :marca"),
-		@NamedQuery(name = "Produto.findByPrice", query = "SELECT p FROM Produto p WHERE p.preco =:preco")})
+		@NamedQuery(name = "Produto.findByPrice", query = "SELECT p FROM Produto p WHERE p.preco =:preco") })
 @Entity
 public class Produto
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer codigo;
 
 	@Column(length = 50, nullable = false)
@@ -52,7 +52,7 @@ public class Produto
 	@Column(length = 50, nullable = false)
 	private int peso;
 
-	@Column(length = 50, nullable = false)
+	@Column(length = 10, nullable = false)
 	private int estoque;
 
 	@Column(length = 20, nullable = false)
@@ -79,6 +79,14 @@ public class Produto
 	public Produto()
 	{
 		super();
+		this.nome = "";
+		this.descricao = "";
+		this.marca = new Marca();
+		this.unidadeMedida = new UnidadeMedida();
+		this.dataValidade = "";
+		this.categoria = new Categoria();
+		this.supermercado = new Supermercado();
+		this.status = Status.DISPONIVEL;
 	}
 
 	/**

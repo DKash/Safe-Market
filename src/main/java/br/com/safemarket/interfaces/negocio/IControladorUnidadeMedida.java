@@ -18,9 +18,11 @@ public interface IControladorUnidadeMedida
 
 	public String alterarUnidadeMedida(UnidadeMedida unidadeMedida) throws UnidadeMedidaInexistenteException;
 
-	public String excluirUnidadeMedida(int codigo) throws MarcaInexistenteException;
+	public String excluirUnidadeMedida(int codigo) throws UnidadeMedidaInexistenteException;
 
-	public List<UnidadeMedida> consultarTodasUnidadeMedidas() throws MarcaInexistenteException;
+	public List<UnidadeMedida> consultarTodasUnidadeMedidas() throws UnidadeMedidaInexistenteException;
+
+	public List<UnidadeMedida> consultarTodasUnidadesMedidasAtivas() throws UnidadeMedidaInexistenteException;
 
 	public UnidadeMedida pesquisarUnidadeMedidaPorNome(String nome) throws MarcaInexistenteException;
 

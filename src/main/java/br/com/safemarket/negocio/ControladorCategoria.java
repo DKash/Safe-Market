@@ -71,7 +71,7 @@ public class ControladorCategoria implements IControladorCategoria
 		boolean existe = false;
 		String mensagem = "";
 		String resultado = rnCategoria.validarCampos(categoria);
-		if (!resultado.equals("") || resultado.length() != 0)
+		if (resultado.equals(""))
 		{
 			existe = rnCategoria.verificarCategoriaExistente(categoria);
 			if (existe == false)
@@ -135,7 +135,7 @@ public class ControladorCategoria implements IControladorCategoria
 		boolean existe = false;
 		String mensagem = "";
 		String resultado = rnCategoria.validarCampos(categoria);
-		if (!resultado.equals("") || resultado.length() != 0)
+		if (resultado.equals(""))
 		{
 			try
 			{
@@ -193,25 +193,30 @@ public class ControladorCategoria implements IControladorCategoria
 	@Consumes("application/json; charset=UTF-8")
 	@Path("/excluirCategoria/{codigo}")
 	@Override
-	public String excluirCategoria(int codigo)
+	public String excluirCategoria(@PathParam("codigo") int codigo)
 	{
 		DAOFactory.abrir();
 		String mensagem = "";
-		categoriaDAO = DAOFactory.getCategoriaDAO();
+		Categoria c = null;
 		try
 		{
-			Categoria categoria = new Categoria();
-			try
+			categoriaDAO = DAOFactory.getCategoriaDAO();
+			c = categoriaDAO.consultarPorId(codigo);
+			if (c != null)
 			{
-				categoria = categoriaDAO.consultarPorId(codigo);
-			}
-			catch (PerfilInexistenteException e)
+				if (c.getStatus() == Status.ATIVO)
+				{
+					c.setStatus(Status.INATIVO);
+					categoriaDAO.alterar(c);
+					mensagem = msg.getMsg_categoria_excluida_com_sucesso();
+				} else
+				{
+					mensagem = msg.getMsg_categoria_excluida_com_sucesso();
+				}
+			} else
 			{
-				// e.printStackTrace();
+				mensagem = new CategoriaInexistenteException().getMessage();
 			}
-			categoria.setStatus(Status.INATIVO);
-			categoriaDAO.alterar(categoria);
-			mensagem = msg.getMsg_categoria_excluida_com_sucesso();
 		}
 		catch (ClienteInexistenteException e)
 		{
@@ -232,7 +237,7 @@ public class ControladorCategoria implements IControladorCategoria
 		catch (CategoriaInexistenteException e)
 		{
 			e.printStackTrace();
-			return e.getMessage();
+			mensagem = e.getMessage();
 		}
 		catch (MarcaInexistenteException e)
 		{
@@ -256,16 +261,16 @@ public class ControladorCategoria implements IControladorCategoria
 	@GET
 	@Produces("application/json; charset=UTF-8")
 	@Consumes("application/json; charset=UTF-8")
-	@Path("/consultarTodosCategorias")
+	@Path("/consultarTodasCategorias")
 	@Override
 	public List<Categoria> consultarTodasCategorias()
 	{
 		DAOFactory.abrir();
-		categoriaDAO = DAOFactory.getCategoriaDAO();
-		List<Categoria> categorias = new ArrayList<>();
+		List<Categoria> lista = new ArrayList<>();
 		try
 		{
-			categorias = categoriaDAO.consultarTodos();
+			categoriaDAO = DAOFactory.getCategoriaDAO();
+			lista = categoriaDAO.consultarTodos();
 		}
 		catch (ClienteInexistenteException e)
 		{
@@ -286,7 +291,6 @@ public class ControladorCategoria implements IControladorCategoria
 		catch (CategoriaInexistenteException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
 		catch (MarcaInexistenteException e)
 		{
@@ -301,7 +305,68 @@ public class ControladorCategoria implements IControladorCategoria
 			// e.printStackTrace();
 		}
 		DAOFactory.close();
-		return categorias;
+		if (!lista.isEmpty())
+		{
+			return lista;
+		}
+		return null;
+	}
+
+	/**
+	 * Esse método lista todas as categorias cadastradas na base
+	 */
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Consumes("application/json; charset=UTF-8")
+	@Path("/consultarTodasCategoriasAtivas")
+	@Override
+	public List<Categoria> consultarTodasCategoriasAtivas()
+	{
+		DAOFactory.abrir();
+		List<Categoria> lista = new ArrayList<>();
+		try
+		{
+			categoriaDAO = DAOFactory.getCategoriaDAO();
+			lista = categoriaDAO.consultarTodosAtivos();
+		}
+		catch (ClienteInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (ProdutoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (SupermercadoInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UsuarioInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (CategoriaInexistenteException e)
+		{
+			e.printStackTrace();
+		}
+		catch (MarcaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		DAOFactory.close();
+		if (!lista.isEmpty())
+		{
+			return lista;
+		}
+		return null;
 	}
 
 	/**
@@ -315,22 +380,21 @@ public class ControladorCategoria implements IControladorCategoria
 	public Categoria pesquisarCategoriaPorNome(@PathParam("nome") String nome)
 	{
 		DAOFactory.abrir();
-		categoriaDAO = DAOFactory.getCategoriaDAO();
 		Categoria c = null;
 		try
 		{
+			categoriaDAO = DAOFactory.getCategoriaDAO();
 			c = categoriaDAO.pesquisarCategoriaPorNome(nome);
 		}
 		catch (CategoriaInexistenteException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
+		DAOFactory.close();
 		if (c == null)
 		{
 			return null;
 		}
-		DAOFactory.close();
 		return c;
 	}
 
@@ -370,7 +434,6 @@ public class ControladorCategoria implements IControladorCategoria
 		catch (CategoriaInexistenteException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
 		catch (MarcaInexistenteException e)
 		{
@@ -385,6 +448,10 @@ public class ControladorCategoria implements IControladorCategoria
 			// e.printStackTrace();
 		}
 		DAOFactory.close();
+		if (c == null)
+		{
+			return null;
+		}
 		return c;
 	}
 }

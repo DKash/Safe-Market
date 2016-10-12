@@ -8,7 +8,14 @@ import java.util.List;
 
 import br.com.safemarket.classesBasicas.Produto;
 import br.com.safemarket.dados.gererics.DAOFactory;
+import br.com.safemarket.exceptions.CategoriaInexistenteException;
+import br.com.safemarket.exceptions.ClienteInexistenteException;
+import br.com.safemarket.exceptions.MarcaInexistenteException;
+import br.com.safemarket.exceptions.PerfilInexistenteException;
 import br.com.safemarket.exceptions.ProdutoInexistenteException;
+import br.com.safemarket.exceptions.SupermercadoInexistenteException;
+import br.com.safemarket.exceptions.UnidadeMedidaInexistenteException;
+import br.com.safemarket.exceptions.UsuarioInexistenteException;
 import br.com.safemarket.interfaces.dao.IProdutoDAO;
 import br.com.safemarket.util.Mensagens;
 
@@ -29,29 +36,47 @@ public class RNProduto
 		List<String> campos = new ArrayList<>();
 		if (produto.getNome() == null || (produto.getNome().equals(""))) campos.add(produto.getNome());
 		if (produto.getDescricao() == null || (produto.getDescricao().equals(""))) campos.add(produto.getDescricao());
-		if (produto.getMarca().getNome() == null || (produto.getMarca().getNome().equals("")))
-			campos.add(produto.getMarca().getNome());
+		if (produto.getMarca().getCodigo() == 0) campos.add(String.valueOf(produto.getMarca().getCodigo()));
 		if (produto.getDataValidade() == null || (produto.getDataValidade().equals("")))
 			campos.add(produto.getDataValidade().toString());
 		if (produto.getPeso() == 0) campos.add(String.valueOf(produto.getPeso()));
 		if (produto.getEstoque() == 0) campos.add(String.valueOf(produto.getEstoque()));
-		if (produto.getCategoria().getNome() == null || (produto.getCategoria().getNome().equals("")))
-			campos.add(produto.getCategoria().getNome());
-		if (produto.getCategoria().getSubcategoria() == null || (produto.getCategoria().getSubcategoria().equals("")))
-			campos.add(produto.getCategoria().getSubcategoria().toString());
+		if (produto.getCategoria().getCodigo() == 0) campos.add(String.valueOf(produto.getCategoria().getCodigo()));
 		if (produto.getSupermercado().getCodigo() == 0)
 			campos.add(String.valueOf(produto.getSupermercado().getCodigo()));
-		if (produto.getUnidadeMedida().getNome() == null || (produto.getUnidadeMedida().getNome().equals("")))
-			campos.add(produto.getUnidadeMedida().getNome());
+		if (produto.getUnidadeMedida().getCodigo() == 0)
+			campos.add(String.valueOf(produto.getUnidadeMedida().getCodigo()));
 		int tam = campos.size();
 		String resultado = "";
-		do
+		while (tam > 0)
 		{
 			resultado += " " + msg.getMsg_campo_invalido() + campos.get(tam);
 			tam--;
 		}
-		while (tam >= 0);
 		return resultado;
+	}
+
+	public boolean verificarProdutoExistente(int codigo)
+	{
+		produtoDAO = DAOFactory.getProdutoDAO();
+		Produto p = null;
+		try
+		{
+			p = produtoDAO.consultarPorId(codigo);
+		}
+		catch (ClienteInexistenteException | ProdutoInexistenteException | SupermercadoInexistenteException
+				| UsuarioInexistenteException | CategoriaInexistenteException | MarcaInexistenteException
+				| UnidadeMedidaInexistenteException | PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		if (p == null)
+		{
+			return false;
+		} else
+		{
+			return true;
+		}
 	}
 
 	public boolean verificarProdutoExistente(Produto produto)
@@ -65,7 +90,6 @@ public class RNProduto
 		catch (ProdutoInexistenteException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
 		if (p == null)
 		{

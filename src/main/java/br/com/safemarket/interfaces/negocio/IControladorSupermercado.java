@@ -22,9 +22,11 @@ public interface IControladorSupermercado
 
 	public String excluirSupermercado(int codigo) throws SupermercadoInexistenteException;
 
-	public Supermercado pesquisarSupermercadoPorCnpj(String cnpj) throws SupermercadoInexistenteException;
+	public List<Supermercado> consultarTodosSupermercados() throws SupermercadoInexistenteException;
+
+	public List<Supermercado> consultarTodosSupermercadosAtivos() throws SupermercadoInexistenteException;
+
+	public Supermercado pesquisarSupermercadoPorCNPJ(String cnpj) throws SupermercadoInexistenteException;
 
 	public Supermercado pesquisarSupermercadoPorId(int codigo) throws SupermercadoInexistenteException;
-
-	public List<Supermercado> consultarTodosSupermercados() throws SupermercadoInexistenteException;
 }

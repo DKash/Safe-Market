@@ -67,8 +67,8 @@ public class Mensagens
 	{
 		super();
 		this.msg_cliente_cadastrado_com_sucesso = "O cliente foi cadastrado com sucesso.";
-		this.msg_cliente_alterado_com_sucesso = "O cliente foi cadastrado com sucesso.";
-		this.msg_cliente_excluido_com_sucesso = "O cliente foi cadastrado com sucesso.";
+		this.msg_cliente_alterado_com_sucesso = "O cliente foi alterado com sucesso.";
+		this.msg_cliente_excluido_com_sucesso = "O cliente foi excluido com sucesso.";
 		this.msg_produto_cadastrado_com_sucesso = "O produto foi cadastrado com sucesso.";
 		this.msg_produto_alterado_com_sucesso = "O produto foi alterado com sucesso.";
 		this.msg_produto_excluido_com_sucesso = "O produto foi excluido com sucesso.";

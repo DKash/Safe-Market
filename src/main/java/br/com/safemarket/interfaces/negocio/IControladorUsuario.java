@@ -25,5 +25,7 @@ public interface IControladorUsuario
 
 	public List<Usuario> consultarTodosUsuarios() throws UsuarioInexistenteException;
 
+	public List<Usuario> consultarTodosUsuariosAtivos() throws UsuarioInexistenteException;
+
 	public Usuario efetuarLogin(Usuario usuario) throws UsuarioInexistenteException;
 }

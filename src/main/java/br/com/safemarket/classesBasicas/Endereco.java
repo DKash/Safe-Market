@@ -38,7 +38,7 @@ public class Endereco
 	@Column(length = 2, nullable = false)
 	private Estado estado;
 
-	@Column(length = 9, nullable = false)
+	@Column(length = 10, nullable = false)
 	private String cep;
 
 	// Construtores

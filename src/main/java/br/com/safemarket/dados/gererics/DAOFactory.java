@@ -8,6 +8,7 @@ import javax.persistence.Persistence;
 
 import br.com.safemarket.dados.CategoriaDAO;
 import br.com.safemarket.dados.ClienteDAO;
+import br.com.safemarket.dados.EnderecoDAO;
 import br.com.safemarket.dados.MarcaDAO;
 import br.com.safemarket.dados.PerfilDAO;
 import br.com.safemarket.dados.ProdutoDAO;
@@ -16,6 +17,7 @@ import br.com.safemarket.dados.UnidadeMedidaDAO;
 import br.com.safemarket.dados.UsuarioDAO;
 import br.com.safemarket.interfaces.dao.ICategoriaDAO;
 import br.com.safemarket.interfaces.dao.IClienteDAO;
+import br.com.safemarket.interfaces.dao.IEnderecoDAO;
 import br.com.safemarket.interfaces.dao.IMarcaDAO;
 import br.com.safemarket.interfaces.dao.IPerfilDAO;
 import br.com.safemarket.interfaces.dao.IProdutoDAO;
@@ -35,6 +37,8 @@ public class DAOFactory
 	private static EntityManagerFactory factory;
 
 	public static IClienteDAO clienteDAO;
+
+	public static IEnderecoDAO enderecoDAO;
 
 	public static ICategoriaDAO categoriaDAO;
 
@@ -77,6 +81,12 @@ public class DAOFactory
 	{
 		clienteDAO = new ClienteDAO(factory.createEntityManager());
 		return clienteDAO;
+	}
+
+	public static IEnderecoDAO getEnderecoDAO()
+	{
+		enderecoDAO = new EnderecoDAO(factory.createEntityManager());
+		return enderecoDAO;
 	}
 
 	public static ICategoriaDAO getCategoriaDAO()

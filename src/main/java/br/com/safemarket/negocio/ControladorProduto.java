@@ -80,89 +80,95 @@ public class ControladorProduto implements IControladorProduto
 	public String cadastrarProduto(Produto produto)
 	{
 		DAOFactory.abrir();
-		boolean existe = rnProduto.verificarProdutoExistente(produto);
-		if (existe == false)
+		boolean existe = false;
+		String mensagem = "";
+		String resultado = rnProduto.validarCampos(produto);
+		if (resultado.equals(""))
 		{
-			try
+			existe = rnProduto.verificarProdutoExistente(produto);
+			if (existe == false)
 			{
-				produtoDAO = DAOFactory.getProdutoDAO();
-				Categoria categoria = rnCategoria.verificarCategoriaExistente(produto.getCategoria().getCodigo());
-				Marca marca = rnMarca.verificarMarcaExistentePorId(produto.getMarca().getCodigo());
-				UnidadeMedida um = rnUnidadeMedida
-						.verificarUnidadeMedidaExistente(produto.getUnidadeMedida().getCodigo());
-				Supermercado supermercado = rnSupermercado
-						.verificarSupermercadoExistente(produto.getSupermercado().getCodigo());
-				if (categoria != null)
+				try
 				{
-					produto.setCategoria(categoria);
-					if (marca != null)
+					produtoDAO = DAOFactory.getProdutoDAO();
+					Categoria categoria = rnCategoria.verificarCategoriaExistente(produto.getCategoria().getCodigo());
+					Marca marca = rnMarca.verificarMarcaExistentePorId(produto.getMarca().getCodigo());
+					UnidadeMedida um = rnUnidadeMedida
+							.verificarUnidadeMedidaExistente(produto.getUnidadeMedida().getCodigo());
+					Supermercado supermercado = rnSupermercado
+							.verificarSupermercadoExistente(produto.getSupermercado().getCodigo());
+					if (categoria != null)
 					{
-						produto.setMarca(marca);
+						produto.setCategoria(categoria);
+						if (marca != null)
+						{
+							produto.setMarca(marca);
+						} else
+						{
+							mensagem = new MarcaInexistenteException().getMessage();
+						}
+						if (um != null)
+						{
+							produto.setUnidadeMedida(um);
+						} else
+						{
+							mensagem = new UnidadeMedidaInexistenteException().getMessage();
+						}
+						if (supermercado != null)
+						{
+							produto.setSupermercado(supermercado);
+							produtoDAO.inserir(produto);
+							mensagem = msg.getMsg_produto_cadastrado_com_sucesso();
+						} else
+						{
+							mensagem = new SupermercadoInexistenteException().getMessage();
+						}
 					} else
 					{
-						return new MarcaInexistenteException().getMessage();
+						mensagem = new CategoriaInexistenteException().getMessage();
 					}
-					if (um != null)
-					{
-						produto.setUnidadeMedida(um);
-					} else
-					{
-						return new UnidadeMedidaInexistenteException().getMessage();
-					}
-					if (supermercado != null)
-					{
-						produto.setSupermercado(supermercado);
-						produtoDAO.inserir(produto);
-						return msg.getMsg_produto_cadastrado_com_sucesso();
-					} else
-					{
-						return new SupermercadoInexistenteException().getMessage();
-					}
-				} else
-				{
-					return new CategoriaInexistenteException().getMessage();
 				}
-			}
-			catch (ClienteExistenteException e)
-			{
-				// e.printStackTrace();
-			}
-			catch (ProdutoExistenteException e)
-			{
-				e.printStackTrace();
-				e.getMessage();
-			}
-			catch (SupermercadoExistenteException e)
-			{
-				// e.printStackTrace();
-			}
-			catch (UsuarioExistenteException e)
-			{
-				// e.printStackTrace();
-			}
-			catch (CategoriaExistenteException e)
-			{
-				// e.printStackTrace();
-			}
-			catch (MarcaExistenteException e)
-			{
-				// e.printStackTrace();
-			}
-			catch (UnidadeMedidaExistenteException e)
-			{
-				// e.printStackTrace();
-			}
-			catch (PerfilExistenteException e)
-			{
-				// e.printStackTrace();
+				catch (ClienteExistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (ProdutoExistenteException e)
+				{
+					e.printStackTrace();
+					mensagem = e.getMessage();
+				}
+				catch (SupermercadoExistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (UsuarioExistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (CategoriaExistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (MarcaExistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (UnidadeMedidaExistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (PerfilExistenteException e)
+				{
+					// e.printStackTrace();
+				}
 			}
 		}
 		DAOFactory.close();
-		return "";
+		return mensagem;
 	}
 
 	/**
-	 * Essse método altera um cliente já cadastrado
+	 * Essse método altera um produto já cadastrado
 	 **/
 	@PUT
 	@Produces("application/json; charset=UTF-8")
@@ -171,59 +177,91 @@ public class ControladorProduto implements IControladorProduto
 	public String alterarProduto(Produto produto)
 	{
 		DAOFactory.abrir();
-		produtoDAO = DAOFactory.getProdutoDAO();
-		Produto existe = new Produto();
-		try
+		boolean existe = false;
+		String mensagem = "";
+		String resultado = rnProduto.validarCampos(produto);
+		if (resultado.equals(""))
 		{
-			try
+			existe = rnProduto.verificarProdutoExistente(produto.getCodigo());
+			if (existe == true)
 			{
-				existe = produtoDAO.consultarPorId(produto.getCodigo());
+				try
+				{
+					produtoDAO = DAOFactory.getProdutoDAO();
+					Categoria categoria = rnCategoria.verificarCategoriaExistente(produto.getCategoria().getCodigo());
+					Marca marca = rnMarca.verificarMarcaExistentePorId(produto.getMarca().getCodigo());
+					UnidadeMedida um = rnUnidadeMedida
+							.verificarUnidadeMedidaExistente(produto.getUnidadeMedida().getCodigo());
+					Supermercado supermercado = rnSupermercado
+							.verificarSupermercadoExistente(produto.getSupermercado().getCodigo());
+					if (categoria != null)
+					{
+						produto.setCategoria(categoria);
+						if (marca != null)
+						{
+							produto.setMarca(marca);
+						} else
+						{
+							mensagem = new MarcaInexistenteException().getMessage();
+						}
+						if (um != null)
+						{
+							produto.setUnidadeMedida(um);
+						} else
+						{
+							mensagem = new UnidadeMedidaInexistenteException().getMessage();
+						}
+						if (supermercado != null)
+						{
+							produto.setSupermercado(supermercado);
+							produtoDAO.alterar(produto);
+							mensagem = msg.getMsg_produto_alterado_com_sucesso();
+						} else
+						{
+							mensagem = new SupermercadoInexistenteException().getMessage();
+						}
+					} else
+					{
+						mensagem = new CategoriaInexistenteException().getMessage();
+					}
+				}
+				catch (ClienteInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (ProdutoInexistenteException e)
+				{
+					e.printStackTrace();
+					mensagem = e.getMessage();
+				}
+				catch (SupermercadoInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (UsuarioInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (CategoriaInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (MarcaInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (UnidadeMedidaInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
+				catch (PerfilInexistenteException e)
+				{
+					// e.printStackTrace();
+				}
 			}
-			catch (PerfilInexistenteException e)
-			{
-				// e.printStackTrace();
-			}
-			if (existe != null)
-			{
-				produtoDAO.alterar(produto);
-				return msg.getMsg_produto_alterado_com_sucesso();
-			}
-		}
-		catch (ClienteInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (ProdutoInexistenteException e)
-		{
-			e.printStackTrace();
-			return e.getMessage();
-		}
-		catch (SupermercadoInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (UsuarioInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (CategoriaInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (MarcaInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (UnidadeMedidaInexistenteException e)
-		{
-			// e.printStackTrace();
-		}
-		catch (PerfilInexistenteException e)
-		{
-			// e.printStackTrace();
 		}
 		DAOFactory.close();
-		return "";
+		return mensagem;
 	}
 
 	/**
@@ -233,30 +271,35 @@ public class ControladorProduto implements IControladorProduto
 	@Produces("application/json; charset=UTF-8")
 	@Consumes("application/json; charset=UTF-8")
 	@Path("/excluirProduto/{codigo}")
-	public String excluirProduto(int codigo)
+	public String excluirProduto(@PathParam("codigo") int codigo)
 	{
 		DAOFactory.abrir();
-		produtoDAO = DAOFactory.getProdutoDAO();
+		String mensagem = "";
 		try
 		{
-			Produto p = null;
-			try
+			produtoDAO = DAOFactory.getProdutoDAO();
+			Produto p = produtoDAO.consultarPorId(codigo);
+			if (p != null)
 			{
-				p = produtoDAO.consultarPorId(codigo);
-			}
-			catch (PerfilInexistenteException e)
-			{
-				// e.printStackTrace();
-			}
-			if (p.getEstoque() != 0)
-			{
-				p.setStatus(Status.INATIVO);
+				if (p.getStatus() == Status.ATIVO || p.getStatus() == Status.DISPONIVEL)
+				{
+					if (p.getEstoque() != 0)
+					{
+						p.setStatus(Status.INATIVO);
+					} else
+					{
+						p.setStatus(Status.INDISPONIVEL);
+					}
+					produtoDAO.alterar(p);
+					mensagem = msg.getMsg_produto_excluido_com_sucesso();
+				} else
+				{
+					mensagem = msg.getMsg_produto_excluido_com_sucesso();
+				}
 			} else
 			{
-				p.setStatus(Status.INDISPONIVEL);
+				mensagem = new ProdutoInexistenteException().getMessage();
 			}
-			produtoDAO.alterar(p);
-			return msg.getMsg_produto_excluido_com_sucesso();
 		}
 		catch (ClienteInexistenteException e)
 		{
@@ -265,7 +308,7 @@ public class ControladorProduto implements IControladorProduto
 		catch (ProdutoInexistenteException e)
 		{
 			e.printStackTrace();
-			return e.getMessage();
+			mensagem = e.getMessage();
 		}
 		catch (SupermercadoInexistenteException e)
 		{
@@ -292,7 +335,7 @@ public class ControladorProduto implements IControladorProduto
 			// e.printStackTrace();
 		}
 		DAOFactory.close();
-		return "";
+		return mensagem;
 	}
 
 	/**
@@ -305,13 +348,11 @@ public class ControladorProduto implements IControladorProduto
 	public List<Produto> consultarTodosProdutos()
 	{
 		DAOFactory.abrir();
-		new DAOFactory();
-		produtoDAO = DAOFactory.getProdutoDAO();
-		List<Produto> produtos = new ArrayList<>();
+		List<Produto> lista = new ArrayList<>();
 		try
 		{
-			produtos = produtoDAO.consultarTodos();
-			return produtos;
+			produtoDAO = DAOFactory.getProdutoDAO();
+			lista = produtoDAO.consultarTodos();
 		}
 		catch (ClienteInexistenteException e)
 		{
@@ -320,7 +361,6 @@ public class ControladorProduto implements IControladorProduto
 		catch (ProdutoInexistenteException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
 		catch (SupermercadoInexistenteException e)
 		{
@@ -347,35 +387,67 @@ public class ControladorProduto implements IControladorProduto
 			// e.printStackTrace();
 		}
 		DAOFactory.close();
+		if (!lista.isEmpty())
+		{
+			return lista;
+		}
 		return null;
 	}
 
 	/**
-	 * Esse método pesquisa o produto cadastrado na base
+	 * Esse método lista todos os produtos ativos cadastrados na base
 	 */
 	@GET
 	@Produces("application/json; charset=UTF-8")
 	@Consumes("application/json; charset=UTF-8")
-	@Path("/pesquisarProdutoPorNome/{nome}")
-	public Produto pesquisarProdutoPorNome(@PathParam("nome") String nome)
+	@Path("/consultarTodosProdutosAtivos")
+	public List<Produto> consultarTodosProdutosAtivos()
 	{
 		DAOFactory.abrir();
-		produtoDAO = DAOFactory.getProdutoDAO();
-		Produto p = null;
+		List<Produto> lista = new ArrayList<>();
 		try
 		{
-			p = produtoDAO.pesquisarProdutoPorNome(nome);
+			produtoDAO = DAOFactory.getProdutoDAO();
+			lista = produtoDAO.consultarTodosAtivos();
+		}
+		catch (ClienteInexistenteException e)
+		{
+			// e.printStackTrace();
 		}
 		catch (ProdutoInexistenteException e)
 		{
 			e.printStackTrace();
 		}
-		if (p == null)
+		catch (SupermercadoInexistenteException e)
 		{
-			return null;
+			// e.printStackTrace();
+		}
+		catch (UsuarioInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (CategoriaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (MarcaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (UnidadeMedidaInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		catch (PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
 		}
 		DAOFactory.close();
-		return p;
+		if (!lista.isEmpty())
+		{
+			return lista;
+		}
+		return null;
 	}
 
 	/**
@@ -389,11 +461,11 @@ public class ControladorProduto implements IControladorProduto
 	public Produto pesquisarProdutoPorId(@PathParam("codigo") int codigo)
 	{
 		DAOFactory.abrir();
-		produtoDAO = DAOFactory.getProdutoDAO();
+		Produto p = null;
 		try
 		{
-			Produto p = produtoDAO.consultarPorId(codigo);
-			return p;
+			produtoDAO = DAOFactory.getProdutoDAO();
+			p = produtoDAO.consultarPorId(codigo);
 		}
 		catch (ClienteInexistenteException e)
 		{
@@ -402,7 +474,6 @@ public class ControladorProduto implements IControladorProduto
 		catch (ProdutoInexistenteException e)
 		{
 			e.printStackTrace();
-			e.getMessage();
 		}
 		catch (SupermercadoInexistenteException e)
 		{
@@ -429,6 +500,94 @@ public class ControladorProduto implements IControladorProduto
 			// e.printStackTrace();
 		}
 		DAOFactory.close();
+		if (p == null)
+		{
+			return null;
+		}
+		return p;
+	}
+
+	/**
+	 * Esse método pesquisa o produto cadastrado na base
+	 */
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Consumes("application/json; charset=UTF-8")
+	@Path("/pesquisarProdutoPorNome/{nome}")
+	public Produto pesquisarProdutoPorNome(@PathParam("nome") String nome)
+	{
+		DAOFactory.abrir();
+		Produto p = null;
+		try
+		{
+			produtoDAO = DAOFactory.getProdutoDAO();
+			p = produtoDAO.pesquisarProdutoPorNome(nome);
+		}
+		catch (ProdutoInexistenteException e)
+		{
+			e.printStackTrace();
+		}
+		DAOFactory.close();
+		if (p == null)
+		{
+			return null;
+		}
+		return p;
+	}
+
+	/**
+	 * Esse método pesquisa o produto cadastrado na base
+	 */
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Consumes("application/json; charset=UTF-8")
+	@Path("/pesquisarProdutoPorMarca/{marca}")
+	public List<Produto> pesquisarProdutoPorMarca(@PathParam("marca") String marca)
+	{
+		DAOFactory.abrir();
+		List<Produto> lista = new ArrayList<>();
+		try
+		{
+			produtoDAO = DAOFactory.getProdutoDAO();
+			lista = produtoDAO.pesquisarProdutosPorMarca(marca);
+		}
+		catch (ProdutoInexistenteException e)
+		{
+			e.printStackTrace();
+		}
+		DAOFactory.close();
+		if (!lista.isEmpty())
+		{
+			return lista;
+		}
+		return null;
+	}
+
+	/**
+	 * Esse método pesquisa o produto cadastrado na base
+	 */
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Consumes("application/json; charset=UTF-8")
+	@Path("/pesquisarProdutoPorPreco/{preco}")
+	public List<Produto> pesquisarProdutoPorPreco(@PathParam("preco") double preco)
+	{
+		DAOFactory.abrir();
+		List<Produto> lista = new ArrayList<>();
+		try
+		{
+			produtoDAO = DAOFactory.getProdutoDAO();
+			lista = produtoDAO.pesquisarProdutosPorPreco(preco);
+		}
+		catch (ProdutoInexistenteException e)
+		{
+			e.printStackTrace();
+		}
+		DAOFactory.close();
+		if (!lista.isEmpty())
+		{
+			return lista;
+		}
 		return null;
 	}
 }

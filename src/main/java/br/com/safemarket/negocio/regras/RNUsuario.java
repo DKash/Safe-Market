@@ -8,6 +8,13 @@ import java.util.List;
 
 import br.com.safemarket.classesBasicas.Usuario;
 import br.com.safemarket.dados.gererics.DAOFactory;
+import br.com.safemarket.exceptions.CategoriaInexistenteException;
+import br.com.safemarket.exceptions.ClienteInexistenteException;
+import br.com.safemarket.exceptions.MarcaInexistenteException;
+import br.com.safemarket.exceptions.PerfilInexistenteException;
+import br.com.safemarket.exceptions.ProdutoInexistenteException;
+import br.com.safemarket.exceptions.SupermercadoInexistenteException;
+import br.com.safemarket.exceptions.UnidadeMedidaInexistenteException;
 import br.com.safemarket.exceptions.UsuarioInexistenteException;
 import br.com.safemarket.interfaces.dao.IUsuarioDAO;
 import br.com.safemarket.util.Mensagens;
@@ -41,6 +48,27 @@ public class RNUsuario
 	}
 
 	// Métodos
+	public Usuario verificarUsuarioExistente(int codigo)
+	{
+		usuarioDAO = DAOFactory.getUsuarioDAO();
+		Usuario u = null;
+		try
+		{
+			u = usuarioDAO.consultarPorId(codigo);
+		}
+		catch (ClienteInexistenteException | ProdutoInexistenteException | SupermercadoInexistenteException
+				| UsuarioInexistenteException | CategoriaInexistenteException | MarcaInexistenteException
+				| UnidadeMedidaInexistenteException | PerfilInexistenteException e)
+		{
+			// e.printStackTrace();
+		}
+		if (u == null)
+		{
+			return null;
+		}
+		return u;
+	}
+
 	public boolean verificarUsuarioExistente(Usuario usuario)
 	{
 		usuarioDAO = DAOFactory.getUsuarioDAO();

@@ -1,8 +1,5 @@
 package br.com.safemarket.classesBasicas;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Cascade;
@@ -32,7 +28,7 @@ public class Cliente
 {
 	// Atributos
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer codigo;
 
 	@Column(length = 80, nullable = false)
@@ -41,10 +37,10 @@ public class Cliente
 	@Column(length = 14, nullable = false, unique = true)
 	private String cpf;
 
-	@Column(length = 13, nullable = true)
+	@Column(length = 14, nullable = true)
 	private String telefone;
 
-	@Column(length = 15, nullable = false)
+	@Column(length = 16, nullable = false)
 	private String celular;
 
 	@OneToOne(fetch = FetchType.EAGER)
@@ -52,9 +48,10 @@ public class Cliente
 	@Fetch(FetchMode.JOIN)
 	private Usuario usuario;
 
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.EAGER)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private List<Endereco> endereco;
+	@Fetch(FetchMode.JOIN)
+	private Endereco endereco;
 
 	// Construtores
 	public Cliente()
@@ -64,11 +61,11 @@ public class Cliente
 		this.telefone = "";
 		this.celular = "";
 		this.usuario = new Usuario();
-		this.endereco = new ArrayList<Endereco>();
+		this.endereco = new Endereco();
 	}
 
 	public Cliente(int codigo, String nome, String cpf, String telefone, String celular, Usuario usuario,
-			List<Endereco> endereco)
+			Endereco endereco)
 	{
 		super();
 		this.codigo = codigo;
@@ -141,12 +138,12 @@ public class Cliente
 		this.usuario = usuario;
 	}
 
-	public List<Endereco> getEndereco()
+	public Endereco getEndereco()
 	{
 		return endereco;
 	}
 
-	public void setEndereco(List<Endereco> endereco)
+	public void setEndereco(Endereco endereco)
 	{
 		this.endereco = endereco;
 	}
